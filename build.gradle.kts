@@ -4,7 +4,7 @@ import org.cadixdev.gradle.licenser.LicenseExtension
 plugins {
     `java-library`
     jacoco
-    id("org.cadixdev.licenser") version "0.5.0" apply false
+    id("org.cadixdev.licenser") version "0.6.1" apply false
 }
 
 val projectName: String by project
@@ -18,7 +18,7 @@ val isSnapshot = version.toString().endsWith("-SNAPSHOT")
 
 allprojects {
     group = "org.cadixdev"
-    version = "0.6.0-SNAPSHOT"
+    version = "1.0.0-SNAPSHOT"
 }
 
 subprojects {
@@ -42,13 +42,13 @@ subprojects {
         testImplementation("org.junit.jupiter:junit-jupiter-engine")
 
         // Spock
-        testImplementation("org.codehaus.groovy:groovy-all:$groovyVersion")
+        testImplementation("org.apache.groovy:groovy-all:$groovyVersion")
         testImplementation("org.spockframework:spock-core:$spockVersion")
     }
 
     java {
         toolchain {
-            languageVersion.set(JavaLanguageVersion.of(11))
+            languageVersion.set(JavaLanguageVersion.of(17))
         }
         withSourcesJar()
         withJavadocJar()
@@ -59,7 +59,7 @@ subprojects {
     }
 
     configure<LicenseExtension> {
-        header = rootProject.file("HEADER.txt")
+        setHeader(rootProject.file("HEADER.txt"));
     }
 
     tasks.withType<JavaCompile>().configureEach {

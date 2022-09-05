@@ -11,6 +11,8 @@ dependencies {
     // Optional dependencies
     implementation("org.ow2.asm:asm-commons:$asmVersion")
     implementation("org.cadixdev:bombe-jar:$bombeVersion")
+
+    testImplementation(project(":lorenz-io-searge"))
 }
 
 tasks.jar.configure {

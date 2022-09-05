@@ -102,7 +102,7 @@ public final class CompletionTest {
         a childField
      */
     private static MappingSet mappings() {
-        final MappingSet mappings = MappingSet.create();
+        final MappingSet mappings = new MappingSet();
 
         final TopLevelClassMapping Parent =
                 mappings.getOrCreateTopLevelClassMapping("Parent");

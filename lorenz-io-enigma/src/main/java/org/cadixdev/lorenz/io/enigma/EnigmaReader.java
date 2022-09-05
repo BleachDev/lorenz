@@ -97,7 +97,7 @@ public class EnigmaReader extends TextMappingsReader {
                 this.stack.pop();
             }
 
-            final String line = EnigmaConstants.removeComments(rawLine).trim();
+            final String line = EnigmaMappingFormat.INSTANCE.removeComments(rawLine).trim();
             if (line.isEmpty()) return;
 
             // Split up the line, for further processing

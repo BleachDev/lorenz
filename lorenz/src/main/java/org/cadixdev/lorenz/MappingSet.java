@@ -37,7 +37,6 @@ import org.cadixdev.lorenz.model.InnerClassMapping;
 import org.cadixdev.lorenz.model.TopLevelClassMapping;
 import org.cadixdev.lorenz.model.jar.CompositeFieldTypeProvider;
 import org.cadixdev.lorenz.model.jar.FieldTypeProvider;
-import org.cadixdev.lorenz.util.BinaryTool;
 import org.cadixdev.lorenz.util.Reversible;
 
 import java.util.Collection;
@@ -56,31 +55,6 @@ import java.util.stream.Collectors;
  * @since 0.1.0
  */
 public class MappingSet implements Reversible<MappingSet, MappingSet>, Iterable<TopLevelClassMapping> {
-
-    /**
-     * Creates a mapping set, using the default Lorenz model implementation.
-     *
-     * @return The mapping set
-     * @since 0.2.0
-     * @deprecated Use {@link MappingSet#MappingSet()} instead
-     */
-    @Deprecated
-    public static MappingSet create() {
-        return new MappingSet();
-    }
-
-    /**
-     * Creates a mapping set, using the given model factory.
-     *
-     * @param modelFactory The model factory to use
-     * @return The mapping set
-     * @since 0.3.0
-     * @deprecated Use {@link MappingSet#MappingSet(MappingSetModelFactory)} instead
-     */
-    @Deprecated
-    public static MappingSet create(final MappingSetModelFactory modelFactory) {
-        return new MappingSet(modelFactory);
-    }
 
     private final MappingSetModelFactory modelFactory;
     private final Map<String, TopLevelClassMapping> topLevelClasses = new ConcurrentHashMap<>();
@@ -333,7 +307,7 @@ public class MappingSet implements Reversible<MappingSet, MappingSet>, Iterable<
         else if (type instanceof ObjectType) {
             final ObjectType obj = (ObjectType) type;
 
-            final String[] name = BinaryTool.from(obj.getClassName());
+            final String[] name = obj.getClassName().split("\\$");
 
             ClassMapping<?, ?> currentClass = this.getClassMapping(name[0]).orElse(null);
             if (currentClass == null) {
@@ -347,7 +321,7 @@ public class MappingSet implements Reversible<MappingSet, MappingSet>, Iterable<
                     result[0] = currentClass.getFullDeobfuscatedName();
                     System.arraycopy(name, i, result, 1, name.length - i);
 
-                    return new ObjectType(BinaryTool.to(result));
+                    return new ObjectType(String.join("$", result));
                 }
                 currentClass = thisClass;
             }

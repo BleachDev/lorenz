@@ -6,5 +6,6 @@ include(
     "lorenz-dsl-groovy",
     "lorenz-io-enigma",
     "lorenz-io-jam",
-    "lorenz-io-proguard"
+    "lorenz-io-proguard",
+    "lorenz-io-searge"
 )

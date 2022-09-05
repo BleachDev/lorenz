@@ -68,7 +68,7 @@ public class JamReader extends TextMappingsReader {
 
         @Override
         public void accept(final String rawLine) {
-            final String line = JamConstants.removeComments(rawLine).trim();
+            final String line = JamMappingFormat.INSTANCE.removeComments(rawLine).trim();
             if (line.isEmpty()) return;
 
             if (line.length() < 4) {

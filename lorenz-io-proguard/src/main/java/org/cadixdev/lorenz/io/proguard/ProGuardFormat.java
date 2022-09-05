@@ -25,6 +25,7 @@
 
 package org.cadixdev.lorenz.io.proguard;
 
+import org.cadixdev.lorenz.io.MappingFormat;
 import org.cadixdev.lorenz.io.MappingsReader;
 import org.cadixdev.lorenz.io.MappingsWriter;
 import org.cadixdev.lorenz.io.TextMappingFormat;

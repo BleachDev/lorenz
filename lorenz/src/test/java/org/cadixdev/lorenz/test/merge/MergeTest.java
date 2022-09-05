@@ -28,7 +28,8 @@ package org.cadixdev.lorenz.test.merge;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.cadixdev.lorenz.MappingSet;
-import org.cadixdev.lorenz.io.MappingFormats;
+import org.cadixdev.lorenz.io.MappingFormat;
+import org.cadixdev.lorenz.io.searge.tsrg.TSrgMappingFormat;
 import org.cadixdev.lorenz.merge.FieldMergeStrategy;
 import org.cadixdev.lorenz.merge.MappingSetMerger;
 import org.cadixdev.lorenz.merge.MappingSetMergerHandler;
@@ -222,9 +223,10 @@ public final class MergeTest {
     }
 
     private static void testCase(final String left, final String right, final String result, final MergeConfig config) throws IOException {
-        final MappingSet leftMappings = MappingFormats.TSRG.createReader(new StringReader(left)).read();
-        final MappingSet rightMappings = MappingFormats.TSRG.createReader(new StringReader(right)).read();
-        final MappingSet outputMappings = MappingFormats.TSRG.createReader(new StringReader(result)).read();
+        TSrgMappingFormat format = TSrgMappingFormat.INSTANCE;
+        final MappingSet leftMappings = format.createReader(new StringReader(left)).read();
+        final MappingSet rightMappings = format.createReader(new StringReader(right)).read();
+        final MappingSet outputMappings = format.createReader(new StringReader(result)).read();
 
         // MappingSets aren't comparable, not directly
         // Instead we write them out to files to compare that way
@@ -233,8 +235,8 @@ public final class MergeTest {
         // Doing it this way also makes reading the diff on failure a lot easier to see the output
         final StringWriter merged = new StringWriter();
         final StringWriter expected = new StringWriter();
-        MappingFormats.TSRG.createWriter(merged).write(MappingSetMerger.create(leftMappings, rightMappings, config).merge());
-        MappingFormats.TSRG.createWriter(expected).write(outputMappings);
+        format.createWriter(merged).write(MappingSetMerger.create(leftMappings, rightMappings, config).merge());
+        format.createWriter(expected).write(outputMappings);
 
         assertEquals(expected.toString(), merged.toString());
     }

@@ -154,7 +154,7 @@ public final class MappingSetTest {
     }
 
     private static MappingSet mappings() {
-        final MappingSet mappings = MappingSet.create();
+        final MappingSet mappings = new MappingSet();
 
         final TopLevelClassMapping a = mappings.getOrCreateTopLevelClassMapping("a")
                 .setDeobfuscatedName("Demo");

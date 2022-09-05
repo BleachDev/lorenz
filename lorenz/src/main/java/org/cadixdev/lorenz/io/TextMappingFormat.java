@@ -86,4 +86,13 @@ public interface TextMappingFormat extends MappingFormat {
         return this.createWriter(Files.newBufferedWriter(path));
     }
 
+    /**
+     * Removes present comments, from the given {@link String} line.
+     *
+     * @param line The line
+     * @return The comment-omitted line
+     */
+    default String removeComments(String line) {
+        return line;
+    }
 }

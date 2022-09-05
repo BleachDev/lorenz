@@ -25,10 +25,6 @@
 
 package org.cadixdev.lorenz.io;
 
-import org.cadixdev.lorenz.io.srg.SrgWriter;
-import org.cadixdev.lorenz.io.srg.csrg.CSrgWriter;
-import org.cadixdev.lorenz.io.srg.tsrg.TSrgWriter;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
@@ -37,10 +33,6 @@ import java.io.Writer;
  * An implementation of {@link MappingsWriter} designed to aid
  * with the implementation of mapping writers for text-based
  * mapping formats.
- *
- * @see SrgWriter
- * @see CSrgWriter
- * @see TSrgWriter
  *
  * @author Jamie Mansfield
  * @since 0.4.0

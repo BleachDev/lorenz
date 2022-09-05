@@ -26,9 +26,6 @@
 package org.cadixdev.lorenz.io;
 
 import org.cadixdev.lorenz.MappingSet;
-import org.cadixdev.lorenz.io.srg.SrgReader;
-import org.cadixdev.lorenz.io.srg.csrg.CSrgReader;
-import org.cadixdev.lorenz.io.srg.tsrg.TSrgReader;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -41,10 +38,6 @@ import java.util.regex.Pattern;
  * An implementation of {@link MappingsReader} designed to aid
  * with the implementation of mapping readers for text-based
  * mapping formats.
- *
- * @see SrgReader
- * @see CSrgReader
- * @see TSrgReader
  *
  * @author Jamie Mansfield
  * @since 0.4.0
@@ -81,10 +74,6 @@ public abstract class TextMappingsReader extends MappingsReader {
 
     /**
      * A parser for a given mappings format.
-     *
-     * @see SrgReader.Processor
-     * @see CSrgReader.Processor
-     * @see TSrgReader.Processor
      *
      * @since 0.4.0
      */

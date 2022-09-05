@@ -5,7 +5,7 @@ plugins {
 val groovyVersion: String by rootProject
 
 dependencies {
-    implementation("org.codehaus.groovy:groovy:$groovyVersion")
+    implementation("org.apache.groovy:groovy:$groovyVersion")
     api(project(":lorenz"))
 }
 

@@ -23,40 +23,38 @@
  * THE SOFTWARE.
  */
 
-package org.cadixdev.lorenz.io.jam.test;
+package org.cadixdev.lorenz.io.searge;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.cadixdev.bombe.type.MethodDescriptor;
-import org.cadixdev.bombe.type.signature.FieldSignature;
 import org.cadixdev.bombe.type.signature.MethodSignature;
 import org.cadixdev.lorenz.MappingSet;
+import org.cadixdev.lorenz.io.MappingFormat;
 import org.cadixdev.lorenz.io.MappingsReader;
-import org.cadixdev.lorenz.io.jam.JamMappingFormat;
 import org.cadixdev.lorenz.model.FieldMapping;
 import org.cadixdev.lorenz.model.InnerClassMapping;
 import org.cadixdev.lorenz.model.MethodMapping;
-import org.cadixdev.lorenz.model.MethodParameterMapping;
 import org.cadixdev.lorenz.model.TopLevelClassMapping;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-
-public class JamReaderTest {
+@Disabled
+public abstract class AbstractSrgReaderTest {
 
     private final MappingSet mappings;
 
-    public JamReaderTest() throws IOException {
-        try (final MappingsReader reader = JamMappingFormat.INSTANCE.createReader(JamReaderTest.class.getResourceAsStream("/test.jam"))) {
+    protected AbstractSrgReaderTest(final MappingFormat format, String path) throws Exception {
+        try (final MappingsReader reader = format.createReader(getClass().getResourceAsStream(path))) {
             this.mappings = reader.read();
         }
     }
 
     @Test
     public void commentRemoval() {
-        JamMappingFormat format = JamMappingFormat.INSTANCE;
+        SrgMappingFormat format = new SrgMappingFormat();
 
         // 1. Check an all comments line
         assertEquals(
@@ -128,11 +126,10 @@ public class JamReaderTest {
 
         // 2. Get the class mapping, and check the field mapping has been added to it
         final TopLevelClassMapping parentMapping = this.mappings.getOrCreateTopLevelClassMapping("ght");
-        final FieldSignature rftSignature = FieldSignature.of("rft", "Ljava/util/logging/Logger;");
-        assertTrue(parentMapping.hasFieldMapping(rftSignature));
+        assertTrue(parentMapping.hasFieldMapping("rft"));
 
         // 3. Get the field mapping, and check the obfuscated, de-obfuscated, and full de-obfuscated name
-        final FieldMapping fieldMapping = parentMapping.getOrCreateFieldMapping(rftSignature);
+        final FieldMapping fieldMapping = parentMapping.getOrCreateFieldMapping("rft");
         assertEquals("rft", fieldMapping.getObfuscatedName());
         assertEquals("log", fieldMapping.getDeobfuscatedName());
         assertEquals("ght/rft", fieldMapping.getFullObfuscatedName());
@@ -143,11 +140,10 @@ public class JamReaderTest {
 
         // 5. Get the inner class mapping, and check the field mapping has been added to it
         final InnerClassMapping classMapping = parentMapping.getOrCreateInnerClassMapping("ds");
-        final FieldSignature juhSignature = FieldSignature.of("juh", "Luk/jamierocks/Server;");
-        assertTrue(classMapping.hasFieldMapping(juhSignature));
+        assertTrue(classMapping.hasFieldMapping("juh"));
 
         // 6. Get the field mapping, and check the obfuscated, de-obfuscated, and full de-obfuscated name
-        final FieldMapping innerFieldMapping = classMapping.getOrCreateFieldMapping(juhSignature);
+        final FieldMapping innerFieldMapping = classMapping.getOrCreateFieldMapping("juh");
         assertEquals("juh", innerFieldMapping.getObfuscatedName());
         assertEquals("server", innerFieldMapping.getDeobfuscatedName());
         assertEquals("ght$ds/juh", innerFieldMapping.getFullObfuscatedName());
@@ -174,21 +170,14 @@ public class JamReaderTest {
         assertEquals("ght/hyuip", methodMapping.getFullObfuscatedName());
         assertEquals("uk/jamierocks/Test/isEven", methodMapping.getFullDeobfuscatedName());
 
-        // 4. Check the parameter mapping is there
-        assertTrue(methodMapping.hasParameterMapping(0));
-
-        // 5. Verify the parameter mapping
-        final MethodParameterMapping parameterMapping = methodMapping.getOrCreateParameterMapping(0);
-        assertEquals("num", parameterMapping.getDeobfuscatedName());
-
-        // 6. Check the /inner/ class mapping has been added to the class mapping
+        // 4. Check the /inner/ class mapping has been added to the class mapping
         assertTrue(parentMapping.hasInnerClassMapping("ds"));
 
-        // 7. Get the inner class mapping, and check the field mapping has been added to it
+        // 5. Get the inner class mapping, and check the field mapping has been added to it
         final InnerClassMapping classMapping = parentMapping.getOrCreateInnerClassMapping("ds");
         assertTrue(parentMapping.hasMethodMapping(isEvenDescriptor));
 
-        // 8. Get the method mapping, and verify it
+        // 6. Get the method mapping, and verify it
         final MethodMapping innerMethodMapping = classMapping.getOrCreateMethodMapping(isEvenDescriptor);
         assertEquals("hyuip", innerMethodMapping.getObfuscatedName());
         assertEquals("isOdd", innerMethodMapping.getDeobfuscatedName());
@@ -196,13 +185,6 @@ public class JamReaderTest {
         assertEquals("(I)Z", innerMethodMapping.getDeobfuscatedDescriptor());
         assertEquals("ght$ds/hyuip", innerMethodMapping.getFullObfuscatedName());
         assertEquals("uk/jamierocks/Test$Example/isOdd", innerMethodMapping.getFullDeobfuscatedName());
-
-        // 9. Check the parameter mapping is there
-        assertTrue(innerMethodMapping.hasParameterMapping(0));
-
-        // 10. Verify the parameter mapping
-        final MethodParameterMapping innerParameterMapping = innerMethodMapping.getOrCreateParameterMapping(0);
-        assertEquals("num", innerParameterMapping.getDeobfuscatedName());
     }
 
 }

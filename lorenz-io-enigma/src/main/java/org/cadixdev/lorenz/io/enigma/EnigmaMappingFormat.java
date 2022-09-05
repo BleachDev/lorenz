@@ -25,6 +25,7 @@
 
 package org.cadixdev.lorenz.io.enigma;
 
+import org.cadixdev.lorenz.io.MappingFormat;
 import org.cadixdev.lorenz.io.MappingsReader;
 import org.cadixdev.lorenz.io.MappingsWriter;
 import org.cadixdev.lorenz.io.TextMappingFormat;
@@ -35,6 +36,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 /**
  * The standard Enigma mapping format.
@@ -43,6 +45,28 @@ import java.util.Optional;
  * @since 0.4.0
  */
 public class EnigmaMappingFormat implements TextMappingFormat {
+
+    public static EnigmaMappingFormat INSTANCE = new EnigmaMappingFormat();
+
+    /**
+     * A regex expression used to remove comments from lines.
+     */
+    private static final Pattern COMMENT_PATTERN = Pattern.compile("#.*");
+
+    /**
+     * The <code>"mapping"</code> file extension, as used by both
+     * cuchaz's mapping project and Fabric's Yarn mappings.
+     */
+    public static final String MAPPING_EXTENSION = "mapping";
+
+    /**
+     * The <code>"enigma"</code> file extension.
+     * <p>
+     * This exists for largely historical reasons, as it was erroneously
+     * used as the standard file extension for Enigma by Lorenz prior to
+     * Lorenz 0.6.
+     */
+    public static final String ENIGMA_EXTENSION = "enigma";
 
     @Override
     public String getIdentifier() {
@@ -66,15 +90,19 @@ public class EnigmaMappingFormat implements TextMappingFormat {
 
     @Override
     public Optional<String> getStandardFileExtension() {
-        return Optional.of(EnigmaConstants.FileExtensions.MAPPING);
+        return Optional.of(MAPPING_EXTENSION);
     }
 
     @Override
     public Collection<String> getFileExtensions() {
         return Collections.unmodifiableCollection(Arrays.asList(
-                EnigmaConstants.FileExtensions.MAPPING,
-                EnigmaConstants.FileExtensions.ENIGMA
+                MAPPING_EXTENSION,
+                ENIGMA_EXTENSION
         ));
     }
 
+    @Override
+    public String removeComments(String line) {
+        return COMMENT_PATTERN.matcher(line).replaceAll("");
+    }
 }

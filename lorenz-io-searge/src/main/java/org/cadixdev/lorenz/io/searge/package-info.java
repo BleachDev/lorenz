@@ -23,42 +23,9 @@
  * THE SOFTWARE.
  */
 
-package org.cadixdev.lorenz.io.enigma;
-
-import org.cadixdev.lorenz.io.MappingsReader;
-import org.cadixdev.lorenz.io.MappingsWriter;
-
-import java.io.Reader;
-import java.io.Writer;
-
 /**
- * The Fabric Enigma mapping format.
+ * The Lorenz-provided implementation of the SRG format.
  *
- * @author Jamie Mansfield
- * @since 0.6.0
+ * @since 1.0.0
  */
-public class FabricEnigmaMappingFormat extends EnigmaMappingFormat {
-
-    public static FabricEnigmaMappingFormat INSTANCE = new FabricEnigmaMappingFormat();
-
-    @Override
-    public String getIdentifier() {
-        return "fabric-engima";
-    }
-
-    @Override
-    public String getName() {
-        return "Enigma (Fabric)";
-    }
-
-    @Override
-    public MappingsReader createReader(final Reader reader) {
-        return new FabricEnigmaReader(reader);
-    }
-
-    @Override
-    public MappingsWriter createWriter(final Writer writer) {
-        return new FabricEnigmaWriter(writer);
-    }
-
-}
+package org.cadixdev.lorenz.io.searge;

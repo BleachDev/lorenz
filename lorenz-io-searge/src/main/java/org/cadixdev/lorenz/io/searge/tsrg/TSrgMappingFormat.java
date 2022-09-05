@@ -23,42 +23,55 @@
  * THE SOFTWARE.
  */
 
-package org.cadixdev.lorenz.io.enigma;
+package org.cadixdev.lorenz.io.searge.tsrg;
 
 import org.cadixdev.lorenz.io.MappingsReader;
 import org.cadixdev.lorenz.io.MappingsWriter;
+import org.cadixdev.lorenz.io.TextMappingFormat;
+import org.cadixdev.lorenz.io.searge.SrgMappingFormat;
 
 import java.io.Reader;
 import java.io.Writer;
+import java.util.Optional;
 
 /**
- * The Fabric Enigma mapping format.
+ * The TSRG mapping format.
  *
  * @author Jamie Mansfield
- * @since 0.6.0
+ * @since 0.4.0
  */
-public class FabricEnigmaMappingFormat extends EnigmaMappingFormat {
+public class TSrgMappingFormat extends SrgMappingFormat {
 
-    public static FabricEnigmaMappingFormat INSTANCE = new FabricEnigmaMappingFormat();
+    public static final TSrgMappingFormat INSTANCE = new TSrgMappingFormat();
+
+    /**
+     * The standard file extension used with the TSRG format.
+     */
+    public static final String STANDARD_EXTENSION = "tsrg";
 
     @Override
     public String getIdentifier() {
-        return "fabric-engima";
+        return "tsrg";
     }
 
     @Override
     public String getName() {
-        return "Enigma (Fabric)";
+        return "TSRG";
     }
 
     @Override
     public MappingsReader createReader(final Reader reader) {
-        return new FabricEnigmaReader(reader);
+        return new TSrgReader(reader);
     }
 
     @Override
     public MappingsWriter createWriter(final Writer writer) {
-        return new FabricEnigmaWriter(writer);
+        return new TSrgWriter(writer);
+    }
+
+    @Override
+    public Optional<String> getStandardFileExtension() {
+        return Optional.of(STANDARD_EXTENSION);
     }
 
 }

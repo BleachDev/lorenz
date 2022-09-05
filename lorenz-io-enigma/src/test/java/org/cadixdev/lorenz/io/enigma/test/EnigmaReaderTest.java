@@ -33,9 +33,9 @@ import org.cadixdev.bombe.type.MethodDescriptor;
 import org.cadixdev.bombe.type.signature.FieldSignature;
 import org.cadixdev.bombe.type.signature.MethodSignature;
 import org.cadixdev.lorenz.MappingSet;
-import org.cadixdev.lorenz.io.MappingFormats;
+import org.cadixdev.lorenz.io.MappingFormat;
 import org.cadixdev.lorenz.io.MappingsReader;
-import org.cadixdev.lorenz.io.enigma.EnigmaConstants;
+import org.cadixdev.lorenz.io.enigma.EnigmaMappingFormat;
 import org.cadixdev.lorenz.model.FieldMapping;
 import org.cadixdev.lorenz.model.InnerClassMapping;
 import org.cadixdev.lorenz.model.MethodMapping;
@@ -50,31 +50,33 @@ public class EnigmaReaderTest {
     private final MappingSet mappings;
 
     public EnigmaReaderTest() throws IOException {
-        try (final MappingsReader reader = MappingFormats.byId("enigma").createReader(EnigmaReaderTest.class.getResourceAsStream("/test.enigma"))) {
+        try (final MappingsReader reader = EnigmaMappingFormat.INSTANCE.createReader(EnigmaReaderTest.class.getResourceAsStream("/test.enigma"))) {
             this.mappings = reader.read();
         }
     }
 
     @Test
     public void commentRemoval() {
+        EnigmaMappingFormat format = EnigmaMappingFormat.INSTANCE;
+
         // 1. Check an all comments line
         assertEquals(
                 "",
-                EnigmaConstants.removeComments("#").trim()
+                format.removeComments("#").trim()
         );
         assertEquals(
                 "",
-                EnigmaConstants.removeComments("# This is a comment").trim()
+                format.removeComments("# This is a comment").trim()
         );
 
         // 2. Check a mixed line
         assertEquals(
                 "blah blah blah",
-                EnigmaConstants.removeComments("blah blah blah #").trim()
+                format.removeComments("blah blah blah #").trim()
         );
         assertEquals(
                 "blah blah blah",
-                EnigmaConstants.removeComments("blah blah blah # This is a comment").trim()
+                format.removeComments("blah blah blah # This is a comment").trim()
         );
 
         // 3. Check that SrgParser#processLine(String) won't accept comments
