@@ -25,7 +25,6 @@
 
 package org.cadixdev.lorenz.dsl.groovy;
 
-import org.cadixdev.lorenz.model.ExtensionKey;
 import org.cadixdev.lorenz.model.Mapping;
 import org.cadixdev.lorenz.util.MappingChangedListener;
 
@@ -55,18 +54,6 @@ public class MappingDsl<T extends Mapping<T, P>, P> {
      */
     public void setDeobf(final String name) {
         this.mapping.setDeobfuscatedName(name);
-    }
-
-    /**
-     * Adds the given extension data to the mapping.
-     *
-     * @param key The extension key
-     * @param value The value of the extension
-     * @param <K> The type of the extension data
-     * @see Mapping#set(ExtensionKey, Object)
-     */
-    public <K> void extension(final ExtensionKey<K> key, final K value) {
-        this.mapping.set(key, value);
     }
 
     /**

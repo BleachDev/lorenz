@@ -26,16 +26,12 @@
 package org.cadixdev.lorenz.impl.model;
 
 import org.cadixdev.lorenz.MappingSet;
-import org.cadixdev.lorenz.model.ExtensionKey;
 import org.cadixdev.lorenz.model.Mapping;
 import org.cadixdev.lorenz.util.MappingChangedListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.StringJoiner;
 
 /**
@@ -50,7 +46,6 @@ import java.util.StringJoiner;
 public abstract class AbstractMappingImpl<M extends Mapping<M, P>, P> implements Mapping<M, P> {
 
     private final MappingSet mappings;
-    private final Map<ExtensionKey<?>, Object> data = new HashMap<>();
     private final String obfuscatedName;
     private String deobfuscatedName;
     private final List<MappingChangedListener<M, P>> listeners = new ArrayList<>();
@@ -107,17 +102,6 @@ public abstract class AbstractMappingImpl<M extends Mapping<M, P>, P> implements
     @Override
     public MappingSet getMappings() {
         return this.mappings;
-    }
-
-    @Override
-    public <T> Optional<T> get(final ExtensionKey<T> key) {
-        return Optional.ofNullable(this.data.get(key)).map(key::cast);
-    }
-
-    @Override
-    public <T> M set(final ExtensionKey<T> key, final T value) {
-        this.data.put(key, value);
-        return (M) this;
     }
 
     protected StringJoiner buildToString() {

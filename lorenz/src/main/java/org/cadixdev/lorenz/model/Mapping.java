@@ -156,43 +156,4 @@ public interface Mapping<M extends Mapping<M, P>, P> extends Reversible<M, P> {
      * @since 0.5.0
      */
     M copy(final P parent);
-
-    /**
-     * Gets the value of the extension data, if it exists.
-     *
-     * @param key The key of the extension data
-     * @param <T> The type of the extension data
-     * @return The value, wrapped in an {@link Optional}
-     * @since 0.5.0
-     */
-    <T> Optional<T> get(final ExtensionKey<T> key);
-
-    /**
-     * Gets the value of the extension data, or uses the supplier (setting that value too).
-     *
-     * @param key The key of the extension data
-     * @param supplier The "backup" value supplier
-     * @param <T> The type of the extension data
-     * @return The value
-     * @since 0.5.0
-     */
-    default <T> T getOrCreate(final ExtensionKey<T> key, final Supplier<T> supplier) {
-        return this.get(key).orElseGet(() -> {
-           final T value = supplier.get();
-           this.set(key, value);
-           return value;
-        });
-    }
-
-    /**
-     * Sets the given extension data to the given value.
-     *
-     * @param key The extension data key
-     * @param value The extension data value
-     * @param <T> The type of the extension data
-     * @return {@code this} for chaining
-     * @since 0.6.0
-     */
-    <T> M set(final ExtensionKey<T> key, final T value);
-
 }

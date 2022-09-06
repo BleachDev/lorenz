@@ -33,7 +33,6 @@ import org.cadixdev.bombe.type.MethodDescriptor;
 import org.cadixdev.bombe.type.signature.FieldSignature;
 import org.cadixdev.bombe.type.signature.MethodSignature;
 import org.cadixdev.lorenz.MappingSet;
-import org.cadixdev.lorenz.io.MappingFormat;
 import org.cadixdev.lorenz.io.MappingsReader;
 import org.cadixdev.lorenz.io.enigma.EnigmaMappingFormat;
 import org.cadixdev.lorenz.model.FieldMapping;
@@ -50,7 +49,7 @@ public class EnigmaReaderTest {
     private final MappingSet mappings;
 
     public EnigmaReaderTest() throws IOException {
-        try (final MappingsReader reader = EnigmaMappingFormat.INSTANCE.createReader(EnigmaReaderTest.class.getResourceAsStream("/test.enigma"))) {
+        try (final MappingsReader reader = EnigmaMappingFormat.INSTANCE.createReader(EnigmaReaderTest.class.getResourceAsStream("/test.mapping"))) {
             this.mappings = reader.read();
         }
     }

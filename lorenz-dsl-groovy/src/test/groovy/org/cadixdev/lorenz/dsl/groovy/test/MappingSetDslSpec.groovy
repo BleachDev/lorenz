@@ -27,7 +27,7 @@ package org.cadixdev.lorenz.dsl.groovy.test
 
 import org.cadixdev.lorenz.MappingSet
 import org.cadixdev.lorenz.dsl.groovy.MappingSetDsl
-import org.cadixdev.lorenz.model.ExtensionKey
+
 import org.cadixdev.lorenz.model.FieldMapping
 import org.cadixdev.lorenz.model.InnerClassMapping
 import org.cadixdev.lorenz.model.MethodMapping
@@ -36,8 +36,6 @@ import org.cadixdev.lorenz.model.TopLevelClassMapping
 import spock.lang.Specification
 
 class MappingSetDslSpec extends Specification {
-
-    static def TEST = new ExtensionKey(String, 'test')
 
     def "creates mapping set"() {
         given:
@@ -56,7 +54,6 @@ class MappingSetDslSpec extends Specification {
             }
             klass('b') {
                 deobf = 'Demo'
-                extension TEST, 'Hello, World!'
                 klass('e') {
                     deobf = 'Inner'
                 }
@@ -88,9 +85,6 @@ class MappingSetDslSpec extends Specification {
         final TopLevelClassMapping b = mappings.topLevelClassMappings[1]
         b.obfuscatedName == 'b'
         b.deobfuscatedName == 'Demo'
-        final Optional<String> testData = b.get(TEST)
-        testData.isPresent()
-        testData.get() == 'Hello, World!'
         // b$e.class
         b.innerClassMappings.size() == 1
         final InnerClassMapping b$e = b.innerClassMappings[0]

@@ -59,15 +59,6 @@ public class EnigmaMappingFormat implements TextMappingFormat {
      */
     public static final String MAPPING_EXTENSION = "mapping";
 
-    /**
-     * The <code>"enigma"</code> file extension.
-     * <p>
-     * This exists for largely historical reasons, as it was erroneously
-     * used as the standard file extension for Enigma by Lorenz prior to
-     * Lorenz 0.6.
-     */
-    public static final String ENIGMA_EXTENSION = "enigma";
-
     @Override
     public String getIdentifier() {
         return "enigma";
@@ -91,14 +82,6 @@ public class EnigmaMappingFormat implements TextMappingFormat {
     @Override
     public Optional<String> getStandardFileExtension() {
         return Optional.of(MAPPING_EXTENSION);
-    }
-
-    @Override
-    public Collection<String> getFileExtensions() {
-        return Collections.unmodifiableCollection(Arrays.asList(
-                MAPPING_EXTENSION,
-                ENIGMA_EXTENSION
-        ));
     }
 
     @Override
