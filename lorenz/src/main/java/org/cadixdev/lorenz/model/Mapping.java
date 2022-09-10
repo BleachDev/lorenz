@@ -29,6 +29,8 @@ import org.cadixdev.lorenz.MappingSet;
 import org.cadixdev.lorenz.util.MappingChangedListener;
 import org.cadixdev.lorenz.util.Reversible;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -130,6 +132,13 @@ public interface Mapping<M extends Mapping<M, P>, P> extends Reversible<M, P> {
      * @return {@code True} if the mapping is mapped, {@code false} otherwise
      */
     boolean hasDeobfuscatedName();
+
+    /**
+     * Gets the Javadoc of the member, this will never be <code>null</code>.
+     *
+     * @return The Javadoc of the member
+     */
+    List<String> getJavadoc();
 
     /**
      * Gets the {@link MappingSet} that the mappings belongs to.

@@ -101,8 +101,7 @@ public class XSrgReader extends TextMappingsReader {
                 // Get mapping, and set de-obfuscated name
                 this.mappings.getOrCreateClassMapping(obfuscatedName)
                         .setDeobfuscatedName(deobfuscatedName);
-            }
-            else if (key.equals(FIELD_MAPPING_KEY) && len == FIELD_MAPPING_ELEMENT_COUNT) {
+            } else if (key.equals(FIELD_MAPPING_KEY) && len == FIELD_MAPPING_ELEMENT_COUNT) {
                 final String fullObfuscatedName = split[1];
                 final String obfuscatedType = split[2];
                 final String fullDeobfuscatedName = split[3];
@@ -116,8 +115,7 @@ public class XSrgReader extends TextMappingsReader {
                 this.mappings.getOrCreateClassMapping(owningClass)
                         .getOrCreateFieldMapping(obfuscatedName, obfuscatedType)
                         .setDeobfuscatedName(deobfuscatedName);
-            }
-            else if (key.equals(METHOD_MAPPING_KEY) && len == METHOD_MAPPING_ELEMENT_COUNT) {
+            } else if (key.equals(METHOD_MAPPING_KEY) && len == METHOD_MAPPING_ELEMENT_COUNT) {
                 final String fullObfuscatedName = split[1];
                 final String obfuscatedSignature = split[2];
                 final String fullDeobfuscatedName = split[3];
@@ -131,12 +129,10 @@ public class XSrgReader extends TextMappingsReader {
                 this.mappings.getOrCreateClassMapping(owningClass)
                         .getOrCreateMethodMapping(obfuscatedName, obfuscatedSignature)
                         .setDeobfuscatedName(deobfuscatedName);
-            }
-            else if (key.equals(PACKAGE_MAPPING_KEY) && len == PACKAGE_MAPPING_ELEMENT_COUNT) {
+            } else if (key.equals(PACKAGE_MAPPING_KEY) && len == PACKAGE_MAPPING_ELEMENT_COUNT) {
                 // Lorenz doesn't currently support package mappings, though they are an SRG feature.
                 // For now, Lorenz will just silently ignore those mappings.
-            }
-            else {
+            } else {
                 throw new IllegalArgumentException("Failed to process line: `" + line + "`!");
             }
         }

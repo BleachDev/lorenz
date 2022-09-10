@@ -60,6 +60,7 @@ public class EnigmaReader extends TextMappingsReader {
         private static final String FIELD_MAPPING_KEY = "FIELD";
         private static final String METHOD_MAPPING_KEY = "METHOD";
         private static final String PARAM_MAPPING_KEY = "ARG";
+        private static final String COMMENT_MAPPING_KEY = "COMMENT";
 
         private static final int CLASS_MAPPING_ELEMENT_WITH_DEOBF_COUNT = 3;
         private static final int CLASS_MAPPING_ELEMENT_WITHOUT_DEOBF_COUNT = 2;
@@ -109,37 +110,35 @@ public class EnigmaReader extends TextMappingsReader {
             if (key.equals(CLASS_MAPPING_KEY) && len == CLASS_MAPPING_ELEMENT_WITHOUT_DEOBF_COUNT) {
                 final String obfName = this.convertClassName(split[1]);
                 this.stack.push(this.readClassMapping(obfName));
-            }
-            else if (key.equals(CLASS_MAPPING_KEY) && len == CLASS_MAPPING_ELEMENT_WITH_DEOBF_COUNT) {
+            } else if (key.equals(CLASS_MAPPING_KEY) && len == CLASS_MAPPING_ELEMENT_WITH_DEOBF_COUNT) {
                 final String obfName = this.convertClassName(split[1]);
                 final String deobfName = this.convertClassName(split[2]);
                 this.stack.push(this.readClassMapping(obfName)
                         .setDeobfuscatedName(deobfName));
-            }
-            else if (key.equals(FIELD_MAPPING_KEY) && len == FIELD_MAPPING_ELEMENT_COUNT) {
+            } else if (key.equals(FIELD_MAPPING_KEY) && len == FIELD_MAPPING_ELEMENT_COUNT) {
                 final String obfName = split[1];
                 final String deobfName = split[2];
                 final String type = this.convertFieldType(FieldType.of(split[3])).toString();
                 this.peekClass().getOrCreateFieldMapping(obfName, type)
                         .setDeobfuscatedName(deobfName);
-            }
-            else if (key.equals(METHOD_MAPPING_KEY) && len == METHOD_MAPPING_ELEMENT_WITHOUT_DEOBF_COUNT) {
+            } else if (key.equals(METHOD_MAPPING_KEY) && len == METHOD_MAPPING_ELEMENT_WITHOUT_DEOBF_COUNT) {
                 final String obfName = split[1];
                 final String descriptor = this.convertDescriptor(MethodDescriptor.of(split[2])).toString();
                 this.stack.push(this.peekClass().getOrCreateMethodMapping(obfName, descriptor));
-            }
-            else if (key.equals(METHOD_MAPPING_KEY) && len == METHOD_MAPPING_ELEMENT_WITH_DEOBF_COUNT) {
+            } else if (key.equals(METHOD_MAPPING_KEY) && len == METHOD_MAPPING_ELEMENT_WITH_DEOBF_COUNT) {
                 final String obfName = split[1];
                 final String deobfName = split[2];
                 final String descriptor = this.convertDescriptor(MethodDescriptor.of(split[3])).toString();
                 this.stack.push(this.peekClass().getOrCreateMethodMapping(obfName, descriptor)
                         .setDeobfuscatedName(deobfName));
-            }
-            else if (key.equals(PARAM_MAPPING_KEY) && len == PARAM_MAPPING_ELEMENT_COUNT) {
+            } else if (key.equals(PARAM_MAPPING_KEY) && len == PARAM_MAPPING_ELEMENT_COUNT) {
                 final int index = Integer.parseInt(split[1]);
                 final String deobfName = split[2];
                 this.peekMethod().getOrCreateParameterMapping(index)
                         .setDeobfuscatedName(deobfName);
+            } else if (key.equals(COMMENT_MAPPING_KEY)) {
+                final String comment = split.length == 1 ? "" : rawLine.substring(split[0].length() + 1);
+                this.stack.peek().getJavadoc().add(comment);
             }
         }
 

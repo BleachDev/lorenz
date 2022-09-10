@@ -125,8 +125,7 @@ public class CSrgReader extends TextMappingsReader {
                 this.mappings.getOrCreateClassMapping(parentClass)
                         .getOrCreateMethodMapping(obfuscatedName, obfuscatedSignature)
                         .setDeobfuscatedName(deobfuscatedName);
-            }
-            else {
+            } else {
                 throw new IllegalArgumentException("Failed to process line: `" + line + "`!");
             }
         }

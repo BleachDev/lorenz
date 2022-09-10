@@ -54,10 +54,10 @@ public class FabricEnigmaWriter extends EnigmaWriter {
 
         if (klass.hasDeobfuscatedName()) {
             final String deobfName = klass.getDeobfuscatedName();
-            this.printIndentedLine(indent, "CLASS " + obfName + " " + deobfName);
+            this.printMapping(klass, indent, "CLASS " + obfName + " " + deobfName);
         }
         else {
-            this.printIndentedLine(indent, "CLASS " + obfName);
+            this.printMapping(klass, indent, "CLASS " + obfName);
         }
     }
 

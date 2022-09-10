@@ -42,7 +42,6 @@ import org.cadixdev.lorenz.model.MethodParameterMapping;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Optional;
 
 /**
  * An implementation of {@link MappingsWriter} for the Enigma format.
@@ -88,9 +87,8 @@ public class EnigmaWriter extends TextMappingsWriter {
 
     private void writeFieldMapping(final FieldMapping field, final int indent) {
         // The SHOULD_WRITE test should have already have been performed, so we're good
-        final Optional<FieldType> fieldType = field.getType();
-        fieldType.ifPresent(type -> {
-            this.printIndentedLine(indent, String.format("FIELD %s %s %s",
+        field.getType().ifPresent(type -> {
+            this.printMapping(field, indent, String.format("FIELD %s %s %s",
                     field.getObfuscatedName(),
                     field.getDeobfuscatedName(),
                     convertFieldType(type)
@@ -102,45 +100,49 @@ public class EnigmaWriter extends TextMappingsWriter {
     private void writeMethodMapping(final MethodMapping method, final int indent) {
         // The SHOULD_WRITE test should have already have been performed, so we're good
         if (method.hasDeobfuscatedName()) {
-            this.printIndentedLine(indent, String.format("METHOD %s %s %s",
+            this.printMapping(method, indent, String.format("METHOD %s %s %s",
                     method.getObfuscatedName(),
                     method.getDeobfuscatedName(),
                     this.convertDescriptor(method.getDescriptor())
             ));
-        }
-        else {
-            this.printIndentedLine(indent, String.format("METHOD %s %s",
+        } else {
+            this.printMapping(method, indent, String.format("METHOD %s %s",
                     method.getObfuscatedName(),
                     this.convertDescriptor(method.getDescriptor())
             ));
         }
 
         for (final MethodParameterMapping param : method.getParameterMappings()) {
-            this.printIndentedLine(indent + 1, String.format("ARG %s %s",
+            this.printMapping(param, indent + 1, String.format("ARG %s %s",
                     param.getIndex(),
                     param.getDeobfuscatedName()
             ));
         }
     }
-
     protected void printClassMapping(final ClassMapping<?, ?> klass, final int indent) {
         final String obfName = this.convertClassName(klass.getFullObfuscatedName());
         if (klass.hasDeobfuscatedName()) {
             final String deobfName = klass instanceof InnerClassMapping ?
                     klass.getDeobfuscatedName() :
                     this.convertClassName(klass.getDeobfuscatedName());
-            this.printIndentedLine(indent, "CLASS " + obfName + " " + deobfName);
-        }
-        else {
-            this.printIndentedLine(indent, "CLASS " + obfName);
+            this.printMapping(klass, indent, "CLASS " + obfName + " " + deobfName);
+        } else {
+            this.printMapping(klass, indent, "CLASS " + obfName);
         }
     }
 
-    protected void printIndentedLine(final int indent, final String line) {
+    protected void printMapping(final Mapping<?, ?> mapping, final int indent, final String line) {
         for (int i = 0; i < indent; i++) {
             this.writer.print('\t');
         }
         this.writer.println(line);
+
+        for (String comment : mapping.getJavadoc()) {
+            for (int i = 0; i < indent + 1; i++) {
+                this.writer.print('\t');
+            }
+            this.writer.println(comment.isEmpty() ? "COMMENT" : String.format("COMMENT %s", comment));
+        }
     }
 
     protected String convertClassName(final String descriptor) {

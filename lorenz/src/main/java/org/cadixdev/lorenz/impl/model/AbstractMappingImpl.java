@@ -30,6 +30,7 @@ import org.cadixdev.lorenz.model.Mapping;
 import org.cadixdev.lorenz.util.MappingChangedListener;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -48,6 +49,7 @@ public abstract class AbstractMappingImpl<M extends Mapping<M, P>, P> implements
     private final MappingSet mappings;
     private final String obfuscatedName;
     private String deobfuscatedName;
+    private final List<String> javadoc = new ArrayList<>();
     private final List<MappingChangedListener<M, P>> listeners = new ArrayList<>();
 
     /**
@@ -97,6 +99,11 @@ public abstract class AbstractMappingImpl<M extends Mapping<M, P>, P> implements
     @Override
     public boolean hasDeobfuscatedName() {
         return !Objects.equals(this.obfuscatedName, this.deobfuscatedName);
+    }
+
+    @Override
+    public List<String> getJavadoc() {
+        return javadoc;
     }
 
     @Override
