@@ -39,95 +39,76 @@ import java.io.Reader;
  */
 public class JamReader extends TextMappingsReader {
 
+    private static final String CLASS_MAPPING_KEY = "CL";
+    private static final String FIELD_MAPPING_KEY = "FD";
+    private static final String METHOD_MAPPING_KEY = "MD";
+    private static final String PARAM_MAPPING_KEY = "MP";
+
+    private static final int CLASS_MAPPING_ELEMENT_COUNT = 3;
+    private static final int FIELD_MAPPING_ELEMENT_COUNT = 5;
+    private static final int METHOD_MAPPING_ELEMENT_COUNT = 5;
+    private static final int PARAM_MAPPING_ELEMENT_COUNT = 6;
+
     public JamReader(final Reader reader) {
-        super(reader, Processor::new);
+        super(reader);
     }
 
-    public static class Processor extends TextMappingsReader.Processor {
+    @Override
+    public void readLine(final MappingSet mappings, final String rawLine) {
+        final String line = JamMappingFormat.INSTANCE.removeComments(rawLine).trim();
+        if (line.isEmpty()) return;
 
-        private static final String CLASS_MAPPING_KEY = "CL";
-        private static final String FIELD_MAPPING_KEY = "FD";
-        private static final String METHOD_MAPPING_KEY = "MD";
-        private static final String PARAM_MAPPING_KEY = "MP";
-
-        private static final int CLASS_MAPPING_ELEMENT_COUNT = 3;
-        private static final int FIELD_MAPPING_ELEMENT_COUNT = 5;
-        private static final int METHOD_MAPPING_ELEMENT_COUNT = 5;
-        private static final int PARAM_MAPPING_ELEMENT_COUNT = 6;
-
-        public Processor(final MappingSet mappings) {
-            super(mappings);
+        if (line.length() < 4) {
+            throw new IllegalArgumentException("Faulty JAM mapping encountered: `" + line + "`!");
         }
 
-        /**
-         * Creates a mappings parser for the JAM format.
-         */
-        public Processor() {
-            this(new MappingSet());
+        // Split up the line, for further processing
+        final String[] split = SPACE.split(line);
+        final int len = split.length;
+
+        // Establish the type of mapping
+        final String key = split[0];
+        if (key.equals(CLASS_MAPPING_KEY) && len == CLASS_MAPPING_ELEMENT_COUNT) {
+            final String obfName = split[1];
+            final String deobfName = split[2];
+
+            mappings.getOrCreateClassMapping(obfName)
+                    .setDeobfuscatedName(deobfName);
+        } else if (key.equals(FIELD_MAPPING_KEY) && len == FIELD_MAPPING_ELEMENT_COUNT) {
+            final String owningClass = split[1];
+            final String obfName = split[2];
+            final String obfDescriptor = split[3];
+            final String deobfName = split[4];
+
+            mappings.getOrCreateClassMapping(owningClass)
+                    .getOrCreateFieldMapping(obfName, obfDescriptor)
+                    .setDeobfuscatedName(deobfName);
+        } else if (key.equals(METHOD_MAPPING_KEY) && len == METHOD_MAPPING_ELEMENT_COUNT) {
+            final String owningClass = split[1];
+            final String obfName = split[2];
+            final String obfDescriptor = split[3];
+            final String deobfName = split[4];
+
+            mappings.getOrCreateClassMapping(owningClass)
+                    .getOrCreateMethodMapping(obfName, obfDescriptor)
+                    .setDeobfuscatedName(deobfName);
+        } else if (key.equals(PARAM_MAPPING_KEY) && len == PARAM_MAPPING_ELEMENT_COUNT) {
+            final String owningClass = split[1];
+            final String owningMethod = split[2];
+            final String owningMethodDescriptor = split[3];
+            final int index;
+            try {
+                index = Integer.parseInt(split[4]);
+            } catch (final Exception ex) {
+                throw new IllegalArgumentException("'" + split[4] + "' is not an integer!");
+            }
+            final String deobfName = split[5];
+
+            mappings.getOrCreateClassMapping(owningClass)
+                    .getOrCreateMethodMapping(owningMethod, owningMethodDescriptor)
+                    .getOrCreateParameterMapping(index)
+                    .setDeobfuscatedName(deobfName);
         }
-
-        @Override
-        public void accept(final String rawLine) {
-            final String line = JamMappingFormat.INSTANCE.removeComments(rawLine).trim();
-            if (line.isEmpty()) return;
-
-            if (line.length() < 4) {
-                throw new IllegalArgumentException("Faulty JAM mapping encountered: `" + line + "`!");
-            }
-
-            // Split up the line, for further processing
-            final String[] split = SPACE.split(line);
-            final int len = split.length;
-
-            // Establish the type of mapping
-            final String key = split[0];
-            if (key.equals(CLASS_MAPPING_KEY) && len == CLASS_MAPPING_ELEMENT_COUNT) {
-                final String obfName = split[1];
-                final String deobfName = split[2];
-
-                this.mappings.getOrCreateClassMapping(obfName)
-                        .setDeobfuscatedName(deobfName);
-            }
-            else if (key.equals(FIELD_MAPPING_KEY) && len == FIELD_MAPPING_ELEMENT_COUNT) {
-                final String owningClass = split[1];
-                final String obfName = split[2];
-                final String obfDescriptor = split[3];
-                final String deobfName = split[4];
-
-                this.mappings.getOrCreateClassMapping(owningClass)
-                        .getOrCreateFieldMapping(obfName, obfDescriptor)
-                        .setDeobfuscatedName(deobfName);
-            }
-            else if (key.equals(METHOD_MAPPING_KEY) && len == METHOD_MAPPING_ELEMENT_COUNT) {
-                final String owningClass = split[1];
-                final String obfName = split[2];
-                final String obfDescriptor = split[3];
-                final String deobfName = split[4];
-
-                this.mappings.getOrCreateClassMapping(owningClass)
-                        .getOrCreateMethodMapping(obfName, obfDescriptor)
-                        .setDeobfuscatedName(deobfName);
-            }
-            else if (key.equals(PARAM_MAPPING_KEY) && len == PARAM_MAPPING_ELEMENT_COUNT) {
-                final String owningClass = split[1];
-                final String owningMethod = split[2];
-                final String owningMethodDescriptor = split[3];
-                final int index;
-                try {
-                    index = Integer.parseInt(split[4]);
-                }
-                catch (final Exception ex) {
-                    throw new IllegalArgumentException("'" + split[4] + "' is not an integer!");
-                }
-                final String deobfName = split[5];
-
-                this.mappings.getOrCreateClassMapping(owningClass)
-                        .getOrCreateMethodMapping(owningMethod, owningMethodDescriptor)
-                        .getOrCreateParameterMapping(index)
-                        .setDeobfuscatedName(deobfName);
-            }
-        }
-
     }
 
 }

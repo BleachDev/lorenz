@@ -44,9 +44,11 @@ import org.junit.jupiter.api.Test;
 @Disabled
 public abstract class AbstractSrgReaderTest {
 
+    private final SrgMappingFormat format;
     private final MappingSet mappings;
 
-    protected AbstractSrgReaderTest(final MappingFormat format, String path) throws Exception {
+    protected AbstractSrgReaderTest(final SrgMappingFormat format, String path) throws Exception {
+        this.format = format;
         try (final MappingsReader reader = format.createReader(getClass().getResourceAsStream(path))) {
             this.mappings = reader.read();
         }
@@ -54,8 +56,6 @@ public abstract class AbstractSrgReaderTest {
 
     @Test
     public void commentRemoval() {
-        SrgMappingFormat format = new SrgMappingFormat();
-
         // 1. Check an all comments line
         assertEquals(
                 "",

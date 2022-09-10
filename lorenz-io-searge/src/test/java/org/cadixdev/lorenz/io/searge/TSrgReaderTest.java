@@ -28,11 +28,14 @@ package org.cadixdev.lorenz.io.searge;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.cadixdev.lorenz.MappingSet;
+import org.cadixdev.lorenz.io.searge.csrg.CSrgReader;
 import org.cadixdev.lorenz.io.searge.tsrg.TSrgMappingFormat;
 import org.cadixdev.lorenz.io.searge.tsrg.TSrgReader;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.io.StringReader;
 
 public class TSrgReaderTest extends AbstractSrgReaderTest {
 
@@ -44,30 +47,25 @@ public class TSrgReaderTest extends AbstractSrgReaderTest {
     public void ignoresPackages() throws IOException {
         // This test ensures that package mappings won't erroneously be read as
         // class mappings. No exceptions should be thrown either.
-        final TSrgReader.Processor parser = new TSrgReader.Processor();
-        parser.accept("abc/ uk/jamierocks/Example");
+        final MappingSet mappings = new TSrgReader(new StringReader("abc/ uk/jamierocks/Example")).read();
 
-        assertEquals(0, parser.getMappings().getTopLevelClassMappings().size());
+        assertEquals(0, mappings.getTopLevelClassMappings().size());
     }
 
     @Test
     public void tooLongInput() throws IOException {
         // This test should set off the first case where IllegalArgumentException
         // is thrown
-        final TSrgReader.Processor parser = new TSrgReader.Processor();
-        assertThrows(IllegalArgumentException.class, () -> {
-            parser.accept("this is a faulty mapping because it is too long");
-        });
+        final TSrgReader parser = new TSrgReader(new StringReader("this is a faulty mapping because it is too long"));
+        assertThrows(IllegalArgumentException.class, parser::read);
     }
 
     @Test
     public void invalidInput() throws IOException {
         // This test should set off the first case where IllegalArgumentException
         // is thrown
-        final TSrgReader.Processor parser = new TSrgReader.Processor();
-        assertThrows(IllegalArgumentException.class, () -> {
-            parser.accept("\t Hi");
-        });
+        final TSrgReader parser = new TSrgReader(new StringReader("\t Hi"));
+        assertThrows(IllegalArgumentException.class, parser::read);
     }
 
 }

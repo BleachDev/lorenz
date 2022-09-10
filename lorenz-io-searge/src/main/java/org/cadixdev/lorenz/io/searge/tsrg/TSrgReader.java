@@ -40,99 +40,76 @@ import java.io.Reader;
  */
 public class TSrgReader extends TextMappingsReader {
 
+    private static final int CLASS_MAPPING_ELEMENT_COUNT = 2;
+    private static final int FIELD_MAPPING_ELEMENT_COUNT = 2;
+    private static final int METHOD_MAPPING_ELEMENT_COUNT = 3;
+
+    private ClassMapping currentClass;
+
     /**
      * Creates a new TSRG mappings reader, for the given {@link Reader}.
      *
      * @param reader The reader
      */
     public TSrgReader(final Reader reader) {
-        super(reader, TSrgReader.Processor::new);
+        super(reader);
     }
 
-    /**
-     * The mappings processor for the TSRG format.
-     */
-    public static class Processor extends TextMappingsReader.Processor {
+    @Override
+    protected void readLine(final MappingSet mappings, final String rawLine) {
+        final String line = TSrgMappingFormat.INSTANCE.removeComments(rawLine);
+        if (line.isEmpty()) return;
 
-        private static final int CLASS_MAPPING_ELEMENT_COUNT = 2;
-        private static final int FIELD_MAPPING_ELEMENT_COUNT = 2;
-        private static final int METHOD_MAPPING_ELEMENT_COUNT = 3;
-
-        private ClassMapping currentClass;
-
-        /**
-         * Creates a mappings parser for the TSRG format, with the provided {@link MappingSet}.
-         *
-         * @param mappings The mappings set
-         */
-        public Processor(final MappingSet mappings) {
-            super(mappings);
+        if (line.length() < 3) {
+            throw new IllegalArgumentException("Faulty TSRG mapping encountered: `" + line + "`!");
         }
 
-        /**
-         * Creates a mappings parser for the TSRG format.
-         */
-        public Processor() {
-            this(new MappingSet());
-        }
+        // Split up the line, for further processing
+        final String[] split = SPACE.split(line);
+        final int len = split.length;
 
-        @Override
-        public void accept(final String rawLine) {
-            final String line = TSrgMappingFormat.INSTANCE.removeComments(rawLine);
-            if (line.isEmpty()) return;
+        // Process class/package mappings
+        if (!split[0].startsWith("\t") && len == CLASS_MAPPING_ELEMENT_COUNT) {
+            final String obfuscatedName = split[0];
+            final String deobfuscatedName = split[1];
 
-            if (line.length() < 3) {
-                throw new IllegalArgumentException("Faulty TSRG mapping encountered: `" + line + "`!");
+            // Package mappings
+            if (obfuscatedName.endsWith("/")) {
+                // Lorenz doesn't currently support package mappings, though they are an SRG feature.
+                // For now, Lorenz will just silently ignore those mappings.
             }
+            // Class mappings
+            else {
+                // Get mapping, and set de-obfuscated name
+                this.currentClass = mappings.getOrCreateClassMapping(obfuscatedName);
+                this.currentClass.setDeobfuscatedName(deobfuscatedName);
+            }
+        }
+        else if (split[0].startsWith("\t") && this.currentClass != null) {
+            final String obfuscatedName = split[0].replace("\t", "");
 
-            // Split up the line, for further processing
-            final String[] split = SPACE.split(line);
-            final int len = split.length;
-
-            // Process class/package mappings
-            if (!split[0].startsWith("\t") && len == CLASS_MAPPING_ELEMENT_COUNT) {
-                final String obfuscatedName = split[0];
+            // Process field mapping
+            if (len == FIELD_MAPPING_ELEMENT_COUNT) {
                 final String deobfuscatedName = split[1];
 
-                // Package mappings
-                if (obfuscatedName.endsWith("/")) {
-                    // Lorenz doesn't currently support package mappings, though they are an SRG feature.
-                    // For now, Lorenz will just silently ignore those mappings.
-                }
-                // Class mappings
-                else {
-                    // Get mapping, and set de-obfuscated name
-                    this.currentClass = this.mappings.getOrCreateClassMapping(obfuscatedName);
-                    this.currentClass.setDeobfuscatedName(deobfuscatedName);
-                }
+                // Get mapping, and set de-obfuscated name
+                this.currentClass
+                        .getOrCreateFieldMapping(obfuscatedName)
+                        .setDeobfuscatedName(deobfuscatedName);
             }
-            else if (split[0].startsWith("\t") && this.currentClass != null) {
-                final String obfuscatedName = split[0].replace("\t", "");
+            // Process method mapping
+            else if (len == METHOD_MAPPING_ELEMENT_COUNT) {
+                final String obfuscatedSignature = split[1];
+                final String deobfuscatedName = split[2];
 
-                // Process field mapping
-                if (len == FIELD_MAPPING_ELEMENT_COUNT) {
-                    final String deobfuscatedName = split[1];
-
-                    // Get mapping, and set de-obfuscated name
-                    this.currentClass
-                            .getOrCreateFieldMapping(obfuscatedName)
-                            .setDeobfuscatedName(deobfuscatedName);
-                }
-                // Process method mapping
-                else if (len == METHOD_MAPPING_ELEMENT_COUNT) {
-                    final String obfuscatedSignature = split[1];
-                    final String deobfuscatedName = split[2];
-
-                    // Get mapping, and set de-obfuscated name
-                    this.currentClass
-                            .getOrCreateMethodMapping(obfuscatedName, obfuscatedSignature)
-                            .setDeobfuscatedName(deobfuscatedName);
-                }
-            } else {
-                throw new IllegalArgumentException("Failed to process line: `" + line + "`!");
+                // Get mapping, and set de-obfuscated name
+                this.currentClass
+                        .getOrCreateMethodMapping(obfuscatedName, obfuscatedSignature)
+                        .setDeobfuscatedName(deobfuscatedName);
             }
+        } else {
+            throw new IllegalArgumentException("Failed to process line: `" + line + "`!");
         }
-
     }
 
 }

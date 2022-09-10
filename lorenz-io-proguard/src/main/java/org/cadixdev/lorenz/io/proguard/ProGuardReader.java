@@ -47,68 +47,60 @@ import java.util.stream.Collectors;
  */
 public class ProGuardReader extends TextMappingsReader {
 
+    private ClassMapping<?, ?> currentClass;
+
     public ProGuardReader(final Reader reader) {
-        super(reader, Processor::new);
+        super(reader);
     }
 
-    public static class Processor extends TextMappingsReader.Processor {
+    @Override
+    protected void readLine(final MappingSet mappings, final String rawLine) {
+        // Ignore comments
+        if (rawLine.startsWith("#")) return;
 
-        private ClassMapping<?, ?> currentClass;
+        final String[] params = rawLine.trim().split(" ");
 
-        public Processor(final MappingSet mappings) {
-            super(mappings);
+        if (params.length == 3 && params[1].equals("->")) {
+            final String obf = params[0].replace('.', '/');
+            // remove the trailing :
+            final String deobf = params[2].substring(0, params[2].length() - 1).replace('.', '/');
+
+            this.currentClass = mappings.getOrCreateClassMapping(obf)
+                    .setDeobfuscatedName(deobf);
         }
 
-        @Override
-        public void accept(final String raw) {
-            // Ignore comments
-            if (raw.startsWith("#")) return;
+        if (params.length == 4 && params[2].equals("->")) {
+            final String returnTypeRaw = params[0];
+            final String obf = params[1];
+            final String deobf = params[3];
 
-            final String[] params = raw.trim().split(" ");
+            // method
+            if (obf.contains("(")) {
+                // remove any line numbers
+                final int index = returnTypeRaw.lastIndexOf(':');
+                final String returnCleanRaw = index != -1 ?
+                        returnTypeRaw.substring(index + 1) :
+                        returnTypeRaw;
+                final Type returnClean = new PGTypeReader(returnCleanRaw).readType();
 
-            if (params.length == 3 && params[1].equals("->")) {
-                final String obf = params[0].replace('.', '/');
-                // remove the trailing :
-                final String deobf = params[2].substring(0, params[2].length() - 1).replace('.', '/');
+                final String obfName = obf.substring(0, obf.indexOf('('));
+                final String[] obfParams = obf.substring(obf.indexOf('(') + 1, obf.length() - 1).split(",");
+                final List<FieldType> paramTypes = Arrays.stream(obfParams)
+                        .filter(line -> !line.isEmpty())
+                        .map(PGTypeReader::new)
+                        .map(PGTypeReader::readFieldType)
+                        .collect(Collectors.toList());
 
-                this.currentClass = this.mappings.getOrCreateClassMapping(obf)
+                this.currentClass.getOrCreateMethodMapping(obfName, new MethodDescriptor(paramTypes, returnClean))
                         .setDeobfuscatedName(deobf);
             }
-
-            if (params.length == 4 && params[2].equals("->")) {
-                final String returnTypeRaw = params[0];
-                final String obf = params[1];
-                final String deobf = params[3];
-
-                // method
-                if (obf.contains("(")) {
-                    // remove any line numbers
-                    final int index = returnTypeRaw.lastIndexOf(':');
-                    final String returnCleanRaw = index != -1 ?
-                            returnTypeRaw.substring(index + 1) :
-                            returnTypeRaw;
-                    final Type returnClean = new PGTypeReader(returnCleanRaw).readType();
-
-                    final String obfName = obf.substring(0, obf.indexOf('('));
-                    final String[] obfParams = obf.substring(obf.indexOf('(') + 1, obf.length() - 1).split(",");
-                    final List<FieldType> paramTypes = Arrays.stream(obfParams)
-                            .filter(line -> !line.isEmpty())
-                            .map(PGTypeReader::new)
-                            .map(PGTypeReader::readFieldType)
-                            .collect(Collectors.toList());
-
-                    this.currentClass.getOrCreateMethodMapping(obfName, new MethodDescriptor(paramTypes, returnClean))
-                            .setDeobfuscatedName(deobf);
-                }
-                // field
-                else {
-                    final FieldSignature fieldSignature = new FieldSignature(obf, new PGTypeReader(returnTypeRaw).readFieldType());
-                    this.currentClass.getOrCreateFieldMapping(fieldSignature)
-                            .setDeobfuscatedName(deobf);
-                }
+            // field
+            else {
+                final FieldSignature fieldSignature = new FieldSignature(obf, new PGTypeReader(returnTypeRaw).readFieldType());
+                this.currentClass.getOrCreateFieldMapping(fieldSignature)
+                        .setDeobfuscatedName(deobf);
             }
         }
-
     }
 
 }

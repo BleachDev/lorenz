@@ -43,65 +43,52 @@ import java.io.Reader;
  * @author Jamie Mansfield
  * @since 0.6.0
  */
-public class FabricEnigmaReader extends TextMappingsReader {
+public class FabricEnigmaReader extends EnigmaReader {
 
     public FabricEnigmaReader(final Reader reader) {
-        super(reader, Processor::new);
+        super(reader);
     }
 
-    public static class Processor extends EnigmaReader.Processor {
-
-        public Processor(final MappingSet mappings) {
-            super(mappings);
+    @Override
+    protected ClassMapping<?, ?> readClassMapping(final MappingSet mappings, final String obfName) {
+        // Fabric's fork of the Enigma format doesn't use full de-obfuscated
+        // names when printing classes (practically this affects inner classes).
+        final Mapping<?, ?> mapping = this.stack.peek();
+        if (mapping == null) {
+            return mappings.getOrCreateTopLevelClassMapping(obfName);
+        }
+        if (!(mapping instanceof ClassMapping)) {
+            throw new UnsupportedOperationException("Not a class on the stack!");
         }
 
-        public Processor() {
-            super();
-        }
-
-        @Override
-        protected ClassMapping<?, ?> readClassMapping(final String obfName) {
-            // Fabric's fork of the Enigma format doesn't use full de-obfuscated
-            // names when printing classes (practically this affects inner classes).
-            final Mapping<?, ?> mapping = this.stack.peek();
-            if (mapping == null) {
-                return this.mappings.getOrCreateTopLevelClassMapping(obfName);
-            }
-            if (!(mapping instanceof ClassMapping)) {
-                throw new UnsupportedOperationException("Not a class on the stack!");
-            }
-
-            return ((ClassMapping<?, ?>) mapping).getOrCreateInnerClassMapping(obfName);
-        }
-
-        @Override
-        protected String convertClassName(final String descriptor) {
-            // Fabric's fork of the Enigma format doesn't add a 'none/' prefix
-            // to un-packaged classes.
-            return descriptor;
-        }
-
-        @Override
-        protected Type convertType(final Type type) {
-            // Fabric's fork of the Enigma format doesn't add a 'none/' prefix
-            // to un-packaged classes.
-            return type;
-        }
-
-        @Override
-        protected FieldType convertFieldType(final FieldType type) {
-            // Fabric's fork of the Enigma format doesn't add a 'none/' prefix
-            // to un-packaged classes.
-            return type;
-        }
-
-        @Override
-        protected MethodDescriptor convertDescriptor(final MethodDescriptor descriptor) {
-            // Fabric's fork of the Enigma format doesn't add a 'none/' prefix
-            // to un-packaged classes.
-            return descriptor;
-        }
-
+        return ((ClassMapping<?, ?>) mapping).getOrCreateInnerClassMapping(obfName);
     }
 
+    @Override
+    protected String convertClassName(final String descriptor) {
+        // Fabric's fork of the Enigma format doesn't add a 'none/' prefix
+        // to un-packaged classes.
+        return descriptor;
+    }
+
+    @Override
+    protected Type convertType(final Type type) {
+        // Fabric's fork of the Enigma format doesn't add a 'none/' prefix
+        // to un-packaged classes.
+        return type;
+    }
+
+    @Override
+    protected FieldType convertFieldType(final FieldType type) {
+        // Fabric's fork of the Enigma format doesn't add a 'none/' prefix
+        // to un-packaged classes.
+        return type;
+    }
+
+    @Override
+    protected MethodDescriptor convertDescriptor(final MethodDescriptor descriptor) {
+        // Fabric's fork of the Enigma format doesn't add a 'none/' prefix
+        // to un-packaged classes.
+        return descriptor;
+    }
 }

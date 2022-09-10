@@ -27,9 +27,11 @@ package org.cadixdev.lorenz.io.searge;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.cadixdev.lorenz.io.searge.csrg.CSrgReader;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.io.StringReader;
 
 public class SrgReaderTest extends AbstractSrgReaderTest {
 
@@ -41,28 +43,23 @@ public class SrgReaderTest extends AbstractSrgReaderTest {
     public void ignoresPackages() throws IOException {
         // This test ensures that package mappings won't set off any exceptions
         // as they are valid input - even though Lorenz won't parse them :p
-        final SrgReader.Processor parser = new SrgReader.Processor();
-        parser.accept("PK: abc uk/jamierocks/Example");
+        new SrgReader(new StringReader("PK: abc uk/jamierocks/Example")).read();
     }
 
     @Test
     public void tooLongInput() throws IOException {
         // This test should set off the first case where IllegalArgumentException
         // is thrown
-        final SrgReader.Processor parser = new SrgReader.Processor();
-        assertThrows(IllegalArgumentException.class, () -> {
-            parser.accept("this is a faulty mapping because it is too long");
-        });
+        final SrgReader parser = new SrgReader(new StringReader("this is a faulty mapping because it is too long"));
+        assertThrows(IllegalArgumentException.class, parser::read);
     }
 
     @Test
     public void invalidInput() throws IOException {
         // This test should set off the first case where IllegalArgumentException
         // is thrown
-        final SrgReader.Processor parser = new SrgReader.Processor();
-        assertThrows(IllegalArgumentException.class, () -> {
-            parser.accept("PK: TooShort");
-        });
+        final SrgReader parser = new SrgReader(new StringReader("PK: TooShort"));
+        assertThrows(IllegalArgumentException.class, parser::read);
     }
 
 }

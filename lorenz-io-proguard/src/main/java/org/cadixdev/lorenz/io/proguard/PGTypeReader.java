@@ -88,29 +88,21 @@ public class PGTypeReader extends StringReader {
     private static FieldType getType(final String raw) {
         if ("byte".equals(raw)) {
             return BaseType.BYTE;
-        }
-        else if ("char".equals(raw)) {
+        } else if ("char".equals(raw)) {
             return BaseType.CHAR;
-        }
-        else if ("double".equals(raw)) {
+        } else if ("double".equals(raw)) {
             return BaseType.DOUBLE;
-        }
-        else if ("float".equals(raw)) {
+        } else if ("float".equals(raw)) {
             return BaseType.FLOAT;
-        }
-        else if ("int".equals(raw)) {
+        } else if ("int".equals(raw)) {
             return BaseType.INT;
-        }
-        else if ("long".equals(raw)) {
+        } else if ("long".equals(raw)) {
             return BaseType.LONG;
-        }
-        else if ("short".equals(raw)) {
+        } else if ("short".equals(raw)) {
             return BaseType.SHORT;
-        }
-        else if ("boolean".equals(raw)) {
+        } else if ("boolean".equals(raw)) {
             return BaseType.BOOLEAN;
-        }
-        else {
+        } else {
             // ObjectType will replace the full stops for forward slashes
             return new ObjectType(raw);
         }

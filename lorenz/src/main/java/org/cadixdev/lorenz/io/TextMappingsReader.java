@@ -44,68 +44,29 @@ import java.util.regex.Pattern;
  */
 public abstract class TextMappingsReader extends MappingsReader {
 
+    protected static final Pattern SPACE = Pattern.compile(" ", Pattern.LITERAL);
+
     protected final BufferedReader reader;
-    protected final Function<MappingSet, Processor> processor;
 
     /**
      * Creates a new mappings reader, for the given {@link Reader}.
      *
      * @param reader The reader
-     * @param processor The line processor to use for reading the lines
      */
-    protected TextMappingsReader(final Reader reader, final Function<MappingSet, Processor> processor) {
+    protected TextMappingsReader(final Reader reader) {
         this.reader = reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader);
-        this.processor = processor;
     }
 
     @Override
     public MappingSet read(final MappingSet mappings) {
-        final Processor processor = this.processor.apply(mappings);
-        this.reader.lines()
-                // Process line
-                .forEach(processor);
+        this.reader.lines().forEach(line -> readLine(mappings, line));
         return mappings;
     }
+
+    protected abstract void readLine(final MappingSet mappings, final String line);
 
     @Override
     public void close() throws IOException {
         this.reader.close();
     }
-
-    /**
-     * A parser for a given mappings format.
-     *
-     * @since 0.4.0
-     */
-    public static abstract class Processor implements Consumer<String> {
-
-        /**
-         * A regular expression used to split {@link String}s at spaces.
-         */
-        protected static final Pattern SPACE = Pattern.compile(" ", Pattern.LITERAL);
-
-        protected final MappingSet mappings;
-
-        /**
-         * Creates a mappings parser, to process the lines in a
-         * mappings file.
-         *
-         * @param mappings The mappings set
-         */
-        protected Processor(final MappingSet mappings) {
-            this.mappings = mappings;
-        }
-
-        /**
-         * Gets the mapping set being read into by the processor.
-         *
-         * @return The mappings
-         * @since 0.5.7
-         */
-        public MappingSet getMappings() {
-            return this.mappings;
-        }
-
-    }
-
 }

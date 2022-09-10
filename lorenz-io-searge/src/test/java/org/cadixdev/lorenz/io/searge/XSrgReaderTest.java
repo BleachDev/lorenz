@@ -27,11 +27,14 @@ package org.cadixdev.lorenz.io.searge;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.cadixdev.lorenz.MappingSet;
+import org.cadixdev.lorenz.io.searge.csrg.CSrgReader;
 import org.cadixdev.lorenz.io.searge.xsrg.XSrgMappingFormat;
 import org.cadixdev.lorenz.io.searge.xsrg.XSrgReader;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.io.StringReader;
 
 public class XSrgReaderTest extends AbstractSrgReaderTest {
 
@@ -43,28 +46,23 @@ public class XSrgReaderTest extends AbstractSrgReaderTest {
     public void ignoresPackages() throws IOException {
         // This test ensures that package mappings won't set off any exceptions
         // as they are valid input - even though Lorenz won't parse them :p
-        final XSrgReader.Processor parser = new XSrgReader.Processor();
-        parser.accept("PK: abc uk/jamierocks/Example");
+        final MappingSet mappings = new XSrgReader(new StringReader("PK: abc uk/jamierocks/Example")).read();
     }
 
     @Test
     public void tooLongInput() throws IOException {
         // This test should set off the first case where IllegalArgumentException
         // is thrown
-        final XSrgReader.Processor parser = new XSrgReader.Processor();
-        assertThrows(IllegalArgumentException.class, () -> {
-            parser.accept("this is a faulty mapping because it is too long");
-        });
+        final XSrgReader parser = new XSrgReader(new StringReader("this is a faulty mapping because it is too long"));
+        assertThrows(IllegalArgumentException.class, parser::read);
     }
 
     @Test
     public void invalidInput() throws IOException {
         // This test should set off the first case where IllegalArgumentException
         // is thrown
-        final XSrgReader.Processor parser = new XSrgReader.Processor();
-        assertThrows(IllegalArgumentException.class, () -> {
-            parser.accept("PK: TooShort");
-        });
+        final XSrgReader parser = new XSrgReader(new StringReader("PK: TooShort"));
+        assertThrows(IllegalArgumentException.class, parser::read);
     }
 
 }
