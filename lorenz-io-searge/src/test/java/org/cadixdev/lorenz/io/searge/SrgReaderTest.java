@@ -27,7 +27,6 @@ package org.cadixdev.lorenz.io.searge;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.cadixdev.lorenz.io.searge.csrg.CSrgReader;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

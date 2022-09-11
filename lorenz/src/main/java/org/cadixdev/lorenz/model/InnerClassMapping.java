@@ -67,44 +67,44 @@ public interface InnerClassMapping extends ClassMapping<InnerClassMapping, Class
 
     @Override
     default String getFullObfuscatedName() {
-        return String.format("%s$%s", this.getParent().getFullObfuscatedName(), this.getObfuscatedName());
+        return String.format("%s$%s", getParent().getFullObfuscatedName(), getObfuscatedName());
     }
 
     @Override
     default String getFullDeobfuscatedName() {
-        return String.format("%s$%s", this.getParent().getFullDeobfuscatedName(), this.getDeobfuscatedName());
+        return String.format("%s$%s", getParent().getFullDeobfuscatedName(), getDeobfuscatedName());
     }
 
     @Override
     default String getObfuscatedPackage() {
-        return this.getParent().getObfuscatedPackage();
+        return getParent().getObfuscatedPackage();
     }
 
     @Override
     default String getDeobfuscatedPackage() {
-        return this.getParent().getDeobfuscatedPackage();
+        return getParent().getDeobfuscatedPackage();
     }
 
     @Override
     default InnerClassMapping reverse(final ClassMapping parent) {
-        final InnerClassMapping mapping = parent.createInnerClassMapping(this.getDeobfuscatedName(), this.getObfuscatedName());
-        this.getFieldMappings().forEach(field -> field.reverse(mapping));
-        this.getMethodMappings().forEach(method -> method.reverse(mapping));
-        this.getInnerClassMappings().forEach(klass -> klass.reverse(mapping));
+        final InnerClassMapping mapping = parent.createInnerClassMapping(getDeobfuscatedName(), getObfuscatedName());
+        getFieldMappings().forEach(field -> field.reverse(mapping));
+        getMethodMappings().forEach(method -> method.reverse(mapping));
+        getInnerClassMappings().forEach(klass -> klass.reverse(mapping));
         return mapping;
     }
 
     @Override
     default InnerClassMapping merge(final InnerClassMapping with, final ClassMapping parent) {
-        return MappingSetMerger.create(this.getMappings(), with.getMappings()).mergeInnerClass(this, with, parent);
+        return MappingSetMerger.create(getMappings(), with.getMappings()).mergeInnerClass(this, with, parent);
     }
 
     @Override
     default InnerClassMapping copy(final ClassMapping parent) {
-        final InnerClassMapping mapping = parent.createInnerClassMapping(this.getObfuscatedName(), this.getDeobfuscatedName());
-        this.getFieldMappings().forEach(field -> field.copy(mapping));
-        this.getMethodMappings().forEach(method -> method.copy(mapping));
-        this.getInnerClassMappings().forEach(klass -> klass.copy(mapping));
+        final InnerClassMapping mapping = parent.createInnerClassMapping(getObfuscatedName(), getDeobfuscatedName());
+        getFieldMappings().forEach(field -> field.copy(mapping));
+        getMethodMappings().forEach(method -> method.copy(mapping));
+        getInnerClassMappings().forEach(klass -> klass.copy(mapping));
         return mapping;
     }
 }

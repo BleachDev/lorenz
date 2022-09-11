@@ -42,7 +42,7 @@ import java.util.regex.Pattern;
  */
 public class JamMappingFormat implements TextMappingFormat {
 
-    public static JamMappingFormat INSTANCE = new JamMappingFormat();
+    public static final JamMappingFormat INSTANCE = new JamMappingFormat();
 
     /**
      * A regex expression used to remove comments from lines.

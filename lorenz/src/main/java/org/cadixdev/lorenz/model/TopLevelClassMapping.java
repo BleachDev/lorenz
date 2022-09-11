@@ -38,62 +38,62 @@ public interface TopLevelClassMapping extends ClassMapping<TopLevelClassMapping,
 
     @Override
     default String getSimpleObfuscatedName() {
-        final String name = this.getObfuscatedName();
+        final String name = getObfuscatedName();
         final int classIndex = name.lastIndexOf('/');
         return classIndex >= 0 ? name.substring(classIndex + 1) : name;
     }
 
     @Override
     default String getSimpleDeobfuscatedName() {
-        final String name = this.getDeobfuscatedName();
+        final String name = getDeobfuscatedName();
         final int classIndex = name.lastIndexOf('/');
         return classIndex >= 0 ? name.substring(classIndex + 1) : name;
     }
 
     @Override
     default String getFullObfuscatedName() {
-        return this.getObfuscatedName();
+        return getObfuscatedName();
     }
 
     @Override
     default String getFullDeobfuscatedName() {
-        return this.getDeobfuscatedName();
+        return getDeobfuscatedName();
     }
 
     @Override
     default String getObfuscatedPackage() {
-        final String name = this.getObfuscatedName();
+        final String name = getObfuscatedName();
         final int classIndex = name.lastIndexOf('/');
         return classIndex >= 0 ? name.substring(0, classIndex) : "";
     }
 
     @Override
     default String getDeobfuscatedPackage() {
-        final String name = this.getDeobfuscatedName();
+        final String name = getDeobfuscatedName();
         final int classIndex = name.lastIndexOf('/');
         return classIndex >= 0 ? name.substring(0, classIndex) : "";
     }
 
     @Override
     default TopLevelClassMapping reverse(final MappingSet parent) {
-        final TopLevelClassMapping mapping = parent.createTopLevelClassMapping(this.getDeobfuscatedName(), this.getObfuscatedName());
-        this.getFieldMappings().forEach(field -> field.reverse(mapping));
-        this.getMethodMappings().forEach(method -> method.reverse(mapping));
-        this.getInnerClassMappings().forEach(klass -> klass.reverse(mapping));
+        final TopLevelClassMapping mapping = parent.createTopLevelClassMapping(getDeobfuscatedName(), getObfuscatedName());
+        getFieldMappings().forEach(field -> field.reverse(mapping));
+        getMethodMappings().forEach(method -> method.reverse(mapping));
+        getInnerClassMappings().forEach(klass -> klass.reverse(mapping));
         return mapping;
     }
 
     @Override
     default TopLevelClassMapping merge(final TopLevelClassMapping with, final MappingSet parent) {
-        return MappingSetMerger.create(this.getMappings(), with.getMappings()).mergeTopLevelClass(this, with, parent);
+        return MappingSetMerger.create(getMappings(), with.getMappings()).mergeTopLevelClass(this, with, parent);
     }
 
     @Override
     default TopLevelClassMapping copy(final MappingSet parent) {
-        final TopLevelClassMapping mapping = parent.createTopLevelClassMapping(this.getObfuscatedName(), this.getDeobfuscatedName());
-        this.getFieldMappings().forEach(field -> field.copy(mapping));
-        this.getMethodMappings().forEach(method -> method.copy(mapping));
-        this.getInnerClassMappings().forEach(klass -> klass.copy(mapping));
+        final TopLevelClassMapping mapping = parent.createTopLevelClassMapping(getObfuscatedName(), getDeobfuscatedName());
+        getFieldMappings().forEach(field -> field.copy(mapping));
+        getMethodMappings().forEach(method -> method.copy(mapping));
+        getInnerClassMappings().forEach(klass -> klass.copy(mapping));
         return mapping;
     }
 

@@ -29,7 +29,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.cadixdev.lorenz.MappingSet;
-import org.cadixdev.lorenz.io.searge.csrg.CSrgReader;
 import org.cadixdev.lorenz.io.searge.tsrg.TSrgMappingFormat;
 import org.cadixdev.lorenz.io.searge.tsrg.TSrgReader;
 import org.junit.jupiter.api.Test;

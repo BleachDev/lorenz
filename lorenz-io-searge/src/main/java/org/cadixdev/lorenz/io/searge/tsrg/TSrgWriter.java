@@ -57,7 +57,7 @@ public class TSrgWriter extends TextMappingsWriter {
         // Write class mappings
         mappings.getTopLevelClassMappings().stream()
                 .filter(ClassMapping::hasMappings)
-                .sorted(this.getConfig().getClassMappingComparator())
+                .sorted(getConfig().getClassMappingComparator())
                 .forEach(this::writeClassMapping);
     }
 
@@ -71,25 +71,25 @@ public class TSrgWriter extends TextMappingsWriter {
         if (mapping.hasDeobfuscatedName() ||
                 mapping.getFieldsByName().values().stream().anyMatch(Mapping::hasDeobfuscatedName) ||
                 mapping.getMethodMappings().stream().anyMatch(MethodMapping::hasMappings)) {
-            this.writer.println(String.format("%s %s", mapping.getFullObfuscatedName(), mapping.getFullDeobfuscatedName()));
+            writer.println(String.format("%s %s", mapping.getFullObfuscatedName(), mapping.getFullDeobfuscatedName()));
         }
 
         // Write field mappings
         mapping.getFieldsByName().values().stream()
                 .filter(Mapping::hasDeobfuscatedName)
-                .sorted(this.getConfig().getFieldMappingComparator())
+                .sorted(getConfig().getFieldMappingComparator())
                 .forEach(this::writeFieldMapping);
 
         // Write method mappings
         mapping.getMethodMappings().stream()
                 .filter(Mapping::hasDeobfuscatedName)
-                .sorted(this.getConfig().getMethodMappingComparator())
+                .sorted(getConfig().getMethodMappingComparator())
                 .forEach(this::writeMethodMapping);
 
         // Write inner class mappings
         mapping.getInnerClassMappings().stream()
                 .filter(ClassMapping::hasMappings)
-                .sorted(this.getConfig().getClassMappingComparator())
+                .sorted(getConfig().getClassMappingComparator())
                 .forEach(this::writeClassMapping);
     }
 
@@ -100,7 +100,7 @@ public class TSrgWriter extends TextMappingsWriter {
      */
     protected void writeFieldMapping(final FieldMapping mapping) {
         // The SHOULD_WRITE test should have already have been performed, so we're good
-        this.writer.println(String.format("\t%s %s", mapping.getObfuscatedName(), mapping.getDeobfuscatedName()));
+        writer.println(String.format("\t%s %s", mapping.getObfuscatedName(), mapping.getDeobfuscatedName()));
     }
 
     /**
@@ -110,7 +110,7 @@ public class TSrgWriter extends TextMappingsWriter {
      */
     protected void writeMethodMapping(final MethodMapping mapping) {
         // The SHOULD_WRITE test should have already have been performed, so we're good
-        this.writer.println(String.format("\t%s %s %s",
+        writer.println(String.format("\t%s %s %s",
                 mapping.getObfuscatedName(), mapping.getObfuscatedDescriptor(),
                 mapping.getDeobfuscatedName()));
     }

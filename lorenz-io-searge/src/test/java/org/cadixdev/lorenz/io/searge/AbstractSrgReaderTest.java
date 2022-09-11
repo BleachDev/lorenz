@@ -32,7 +32,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.cadixdev.bombe.type.MethodDescriptor;
 import org.cadixdev.bombe.type.signature.MethodSignature;
 import org.cadixdev.lorenz.MappingSet;
-import org.cadixdev.lorenz.io.MappingFormat;
 import org.cadixdev.lorenz.io.MappingsReader;
 import org.cadixdev.lorenz.model.FieldMapping;
 import org.cadixdev.lorenz.model.InnerClassMapping;
@@ -50,7 +49,7 @@ public abstract class AbstractSrgReaderTest {
     protected AbstractSrgReaderTest(final SrgMappingFormat format, String path) throws Exception {
         this.format = format;
         try (final MappingsReader reader = format.createReader(getClass().getResourceAsStream(path))) {
-            this.mappings = reader.read();
+            mappings = reader.read();
         }
     }
 
@@ -77,18 +76,18 @@ public abstract class AbstractSrgReaderTest {
         );
 
         // 3. Check that SrgParser#processLine(String) won't accept comments
-        assertFalse(this.mappings.hasTopLevelClassMapping("yu"));
-        assertTrue(this.mappings.hasTopLevelClassMapping("uih"));
-        assertFalse(this.mappings.hasTopLevelClassMapping("op"));
+        assertFalse(mappings.hasTopLevelClassMapping("yu"));
+        assertTrue(mappings.hasTopLevelClassMapping("uih"));
+        assertFalse(mappings.hasTopLevelClassMapping("op"));
     }
 
     @Test
     public void topLevelClass() {
         // 1. Check the class has been added to the mapping set
-        assertTrue(this.mappings.hasTopLevelClassMapping("ght"));
+        assertTrue(mappings.hasTopLevelClassMapping("ght"));
 
         // 2. Get the class mapping, and check the obfuscated and de-obfuscated name
-        final TopLevelClassMapping classMapping = this.mappings.getOrCreateTopLevelClassMapping("ght");
+        final TopLevelClassMapping classMapping = mappings.getOrCreateTopLevelClassMapping("ght");
         assertEquals("ght", classMapping.getObfuscatedName());
         assertEquals("uk/jamierocks/Test", classMapping.getDeobfuscatedName());
     }
@@ -96,10 +95,10 @@ public abstract class AbstractSrgReaderTest {
     @Test
     public void innerClass() {
         // 1. Check the /parent/ class has been added to the mapping set
-        assertTrue(this.mappings.hasTopLevelClassMapping("ght"));
+        assertTrue(mappings.hasTopLevelClassMapping("ght"));
 
         // 2. Get the parent class mapping, and check the inner class mapping has been added to it
-        final TopLevelClassMapping parentMapping = this.mappings.getOrCreateTopLevelClassMapping("ght");
+        final TopLevelClassMapping parentMapping = mappings.getOrCreateTopLevelClassMapping("ght");
         assertTrue(parentMapping.hasInnerClassMapping("ds"));
 
         // 3. Get the inner class mapping, and check the obfuscated, de-obfuscated, and full de-obfuscated name
@@ -122,10 +121,10 @@ public abstract class AbstractSrgReaderTest {
     @Test
     public void field() {
         // 1. Check the /parent/ class has been added to the mapping set
-        assertTrue(this.mappings.hasTopLevelClassMapping("ght"));
+        assertTrue(mappings.hasTopLevelClassMapping("ght"));
 
         // 2. Get the class mapping, and check the field mapping has been added to it
-        final TopLevelClassMapping parentMapping = this.mappings.getOrCreateTopLevelClassMapping("ght");
+        final TopLevelClassMapping parentMapping = mappings.getOrCreateTopLevelClassMapping("ght");
         assertTrue(parentMapping.hasFieldMapping("rft"));
 
         // 3. Get the field mapping, and check the obfuscated, de-obfuscated, and full de-obfuscated name
@@ -153,10 +152,10 @@ public abstract class AbstractSrgReaderTest {
     @Test
     public void method() {
         // 1. Check the /parent/ class has been added to the mapping set
-        assertTrue(this.mappings.hasTopLevelClassMapping("ght"));
+        assertTrue(mappings.hasTopLevelClassMapping("ght"));
 
         // 2. Get the class mapping, and check the method mapping has been added to it
-        final TopLevelClassMapping parentMapping = this.mappings.getOrCreateTopLevelClassMapping("ght");
+        final TopLevelClassMapping parentMapping = mappings.getOrCreateTopLevelClassMapping("ght");
         final MethodDescriptor isEvenSignature = MethodDescriptor.of("(I)Z");
         final MethodSignature isEvenDescriptor = new MethodSignature("hyuip", isEvenSignature);
         assertTrue(parentMapping.hasMethodMapping(isEvenDescriptor));

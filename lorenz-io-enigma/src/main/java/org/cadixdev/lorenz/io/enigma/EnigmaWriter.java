@@ -59,36 +59,36 @@ public class EnigmaWriter extends TextMappingsWriter {
     public void write(final MappingSet mappings) throws IOException {
         mappings.getTopLevelClassMappings().stream()
                 .filter(ClassMapping::hasMappings)
-                .sorted(this.getConfig().getClassMappingComparator())
-                .forEach(klass -> this.writeClassMapping(klass, 0));
+                .sorted(getConfig().getClassMappingComparator())
+                .forEach(klass -> writeClassMapping(klass, 0));
     }
 
     private void writeClassMapping(final ClassMapping<?, ?> klass, final int indent) {
-        this.printClassMapping(klass, indent);
+        printClassMapping(klass, indent);
 
         // Write inner class mappings
         klass.getInnerClassMappings().stream()
                 .filter(ClassMapping::hasMappings)
-                .sorted(this.getConfig().getClassMappingComparator())
-                .forEach(inner -> this.writeClassMapping(inner, indent + 1));
+                .sorted(getConfig().getClassMappingComparator())
+                .forEach(inner -> writeClassMapping(inner, indent + 1));
 
         // Write field mappings
         klass.getFieldMappings().stream()
                 .filter(Mapping::hasDeobfuscatedName)
-                .sorted(this.getConfig().getFieldMappingComparator())
-                .forEach(field -> this.writeFieldMapping(field, indent + 1));
+                .sorted(getConfig().getFieldMappingComparator())
+                .forEach(field -> writeFieldMapping(field, indent + 1));
 
         // Write method mappings
         klass.getMethodMappings().stream()
                 .filter(MethodMapping::hasMappings)
-                .sorted(this.getConfig().getMethodMappingComparator())
-                .forEach(method -> this.writeMethodMapping(method, indent + 1));
+                .sorted(getConfig().getMethodMappingComparator())
+                .forEach(method -> writeMethodMapping(method, indent + 1));
     }
 
     private void writeFieldMapping(final FieldMapping field, final int indent) {
         // The SHOULD_WRITE test should have already have been performed, so we're good
         field.getType().ifPresent(type -> {
-            this.printMapping(field, indent, String.format("FIELD %s %s %s",
+            printMapping(field, indent, String.format("FIELD %s %s %s",
                     field.getObfuscatedName(),
                     field.getDeobfuscatedName(),
                     convertFieldType(type)
@@ -100,48 +100,48 @@ public class EnigmaWriter extends TextMappingsWriter {
     private void writeMethodMapping(final MethodMapping method, final int indent) {
         // The SHOULD_WRITE test should have already have been performed, so we're good
         if (method.hasDeobfuscatedName()) {
-            this.printMapping(method, indent, String.format("METHOD %s %s %s",
+            printMapping(method, indent, String.format("METHOD %s %s %s",
                     method.getObfuscatedName(),
                     method.getDeobfuscatedName(),
-                    this.convertDescriptor(method.getDescriptor())
+                    convertDescriptor(method.getDescriptor())
             ));
         } else {
-            this.printMapping(method, indent, String.format("METHOD %s %s",
+            printMapping(method, indent, String.format("METHOD %s %s",
                     method.getObfuscatedName(),
-                    this.convertDescriptor(method.getDescriptor())
+                    convertDescriptor(method.getDescriptor())
             ));
         }
 
         for (final MethodParameterMapping param : method.getParameterMappings()) {
-            this.printMapping(param, indent + 1, String.format("ARG %s %s",
+            printMapping(param, indent + 1, String.format("ARG %s %s",
                     param.getIndex(),
                     param.getDeobfuscatedName()
             ));
         }
     }
     protected void printClassMapping(final ClassMapping<?, ?> klass, final int indent) {
-        final String obfName = this.convertClassName(klass.getFullObfuscatedName());
+        final String obfName = convertClassName(klass.getFullObfuscatedName());
         if (klass.hasDeobfuscatedName()) {
             final String deobfName = klass instanceof InnerClassMapping ?
                     klass.getDeobfuscatedName() :
-                    this.convertClassName(klass.getDeobfuscatedName());
-            this.printMapping(klass, indent, "CLASS " + obfName + " " + deobfName);
+                    convertClassName(klass.getDeobfuscatedName());
+            printMapping(klass, indent, "CLASS " + obfName + " " + deobfName);
         } else {
-            this.printMapping(klass, indent, "CLASS " + obfName);
+            printMapping(klass, indent, "CLASS " + obfName);
         }
     }
 
     protected void printMapping(final Mapping<?, ?> mapping, final int indent, final String line) {
         for (int i = 0; i < indent; i++) {
-            this.writer.print('\t');
+            writer.print('\t');
         }
-        this.writer.println(line);
+        writer.println(line);
 
         for (String comment : mapping.getJavadoc()) {
             for (int i = 0; i < indent + 1; i++) {
-                this.writer.print('\t');
+                writer.print('\t');
             }
-            this.writer.println(comment.isEmpty() ? "COMMENT" : String.format("COMMENT %s", comment));
+            writer.println(comment.isEmpty() ? "COMMENT" : String.format("COMMENT %s", comment));
         }
     }
 
@@ -154,7 +154,7 @@ public class EnigmaWriter extends TextMappingsWriter {
 
     protected Type convertType(final Type type) {
         if (type instanceof FieldType) {
-            return this.convertFieldType((FieldType) type);
+            return convertFieldType((FieldType) type);
         }
         return type;
     }
@@ -162,11 +162,11 @@ public class EnigmaWriter extends TextMappingsWriter {
     protected FieldType convertFieldType(final FieldType type) {
         if (type instanceof ArrayType) {
             final ArrayType arr = (ArrayType) type;
-            return new ArrayType(arr.getDimCount(), this.convertFieldType(arr.getComponent()));
+            return new ArrayType(arr.getDimCount(), convertFieldType(arr.getComponent()));
         }
         if (type instanceof ObjectType) {
             final ObjectType obj = (ObjectType) type;
-            return new ObjectType(this.convertClassName(obj.getClassName()));
+            return new ObjectType(convertClassName(obj.getClassName()));
         }
         return type;
     }
@@ -174,9 +174,9 @@ public class EnigmaWriter extends TextMappingsWriter {
     protected String convertDescriptor(final MethodDescriptor descriptor) {
         final StringBuilder typeBuilder = new StringBuilder();
         typeBuilder.append("(");
-        descriptor.getParamTypes().forEach(type -> typeBuilder.append(this.convertFieldType(type)));
+        descriptor.getParamTypes().forEach(type -> typeBuilder.append(convertFieldType(type)));
         typeBuilder.append(")");
-        typeBuilder.append(this.convertType(descriptor.getReturnType()));
+        typeBuilder.append(convertType(descriptor.getReturnType()));
         return typeBuilder.toString();
     }
 

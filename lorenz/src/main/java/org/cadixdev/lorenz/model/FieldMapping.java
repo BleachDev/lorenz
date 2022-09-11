@@ -54,13 +54,13 @@ public interface FieldMapping extends MemberMapping<FieldMapping, ClassMapping> 
      * @since 0.5.0
      */
     default FieldSignature getDeobfuscatedSignature() {
-        return this.getType().map(fieldType -> new FieldSignature(this.getDeobfuscatedName(), this.getMappings().deobfuscate(fieldType)))
-                .orElseGet(() -> new FieldSignature(this.getDeobfuscatedName()));
+        return getType().map(fieldType -> new FieldSignature(getDeobfuscatedName(), getMappings().deobfuscate(fieldType)))
+                .orElseGet(() -> new FieldSignature(getDeobfuscatedName()));
     }
 
     @Override
     default String getObfuscatedName() {
-        return this.getSignature().getName();
+        return getSignature().getName();
     }
 
     /**
@@ -70,32 +70,32 @@ public interface FieldMapping extends MemberMapping<FieldMapping, ClassMapping> 
      * @since 0.4.0
      */
     default Optional<FieldType> getType() {
-        return this.getSignature().getType();
+        return getSignature().getType();
     }
 
     @Override
     default String getFullObfuscatedName() {
-        return String.format("%s/%s", this.getParent().getFullObfuscatedName(), this.getObfuscatedName());
+        return String.format("%s/%s", getParent().getFullObfuscatedName(), getObfuscatedName());
     }
 
     @Override
     default String getFullDeobfuscatedName() {
-        return String.format("%s/%s", this.getParent().getFullDeobfuscatedName(), this.getDeobfuscatedName());
+        return String.format("%s/%s", getParent().getFullDeobfuscatedName(), getDeobfuscatedName());
     }
 
     @Override
     default FieldMapping reverse(final ClassMapping parent) {
-        return parent.createFieldMapping(this.getDeobfuscatedSignature(), this.getObfuscatedName());
+        return parent.createFieldMapping(getDeobfuscatedSignature(), getObfuscatedName());
     }
 
     @Override
     default FieldMapping merge(final FieldMapping with, final ClassMapping parent) {
-        return MappingSetMerger.create(this.getMappings(), with.getMappings()).mergeField(this, with, parent);
+        return MappingSetMerger.create(getMappings(), with.getMappings()).mergeField(this, with, parent);
     }
 
     @Override
     default FieldMapping copy(final ClassMapping parent) {
-        return parent.createFieldMapping(this.getSignature(), this.getDeobfuscatedName());
+        return parent.createFieldMapping(getSignature(), getDeobfuscatedName());
     }
 
 }

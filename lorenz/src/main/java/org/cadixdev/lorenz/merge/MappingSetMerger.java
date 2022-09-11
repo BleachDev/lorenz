@@ -159,7 +159,7 @@ public interface MappingSetMerger {
      * @see MappingSetMerger#merge(MappingSet)
      */
     default MappingSet merge() {
-        return this.merge(new MappingSet());
+        return merge(new MappingSet());
     }
 
     /**

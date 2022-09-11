@@ -54,17 +54,17 @@ public class MethodParameterMappingImpl
 
     @Override
     public int getIndex() {
-        return this.index;
+        return index;
     }
 
     @Override
     public String getFullObfuscatedName() {
-        return this.getObfuscatedName();
+        return getObfuscatedName();
     }
 
     @Override
     public String getFullDeobfuscatedName() {
-        return this.getDeobfuscatedName();
+        return getDeobfuscatedName();
     }
 
     @Override

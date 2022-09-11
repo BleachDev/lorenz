@@ -76,14 +76,14 @@ public class MergeContext {
      * @return The {@code left} {@link MappingSet} for the merge operation, not {@code null}.
      */
     public MappingSet getLeft() {
-        return this.left;
+        return left;
     }
 
     /**
      * @return The {@code right} {@link MappingSet} for the merge operation, not {@code null}.
      */
     public MappingSet getRight() {
-        return this.right;
+        return right;
     }
 
     /**
@@ -92,18 +92,18 @@ public class MergeContext {
      *         efficient than calling {@link MappingSet#reverse()} yourself.
      */
     public MappingSet getLeftReversed() {
-        MappingSet ctx = this.leftReversed;
+        MappingSet ctx = leftReversed;
         if (ctx != null) {
             return ctx;
         }
 
-        synchronized (this.left) {
-            ctx = this.leftReversed;
+        synchronized (left) {
+            ctx = leftReversed;
             if (ctx != null) {
                 return ctx;
             }
-            this.leftReversed = this.left.reverse();
-            ctx = this.leftReversed;
+            leftReversed = left.reverse();
+            ctx = leftReversed;
         }
 
         return ctx;
@@ -115,18 +115,18 @@ public class MergeContext {
      *         efficient than calling {@link MappingSet#reverse()} yourself.
      */
     public MappingSet getRightReversed() {
-        MappingSet ctx = this.rightReversed;
+        MappingSet ctx = rightReversed;
         if (ctx != null) {
             return ctx;
         }
 
-        synchronized (this.right) {
-            ctx = this.rightReversed;
+        synchronized (right) {
+            ctx = rightReversed;
             if (ctx != null) {
                 return ctx;
             }
-            this.rightReversed = this.right.reverse();
-            ctx = this.rightReversed;
+            rightReversed = right.reverse();
+            ctx = rightReversed;
         }
 
         return ctx;

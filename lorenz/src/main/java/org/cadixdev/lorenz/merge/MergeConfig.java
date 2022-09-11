@@ -60,7 +60,7 @@ public final class MergeConfig {
      * @see MappingSetMergerHandler
      */
     public MappingSetMergerHandler getHandler() {
-        return this.handler;
+        return handler;
     }
 
     /**
@@ -69,7 +69,7 @@ public final class MergeConfig {
      * @return The merge strategy to use for merging method mappings. Never {@code null}.
      */
     public MethodMergeStrategy getMethodMergeStrategy() {
-        return this.methodMergeStrategy;
+        return methodMergeStrategy;
     }
 
     /**
@@ -78,7 +78,7 @@ public final class MergeConfig {
      * @return The merge strategy to use for merging field mappings. Never {@code null}.
      */
     public FieldMergeStrategy getFieldMergeStrategy() {
-        return this.fieldMergeStrategy;
+        return fieldMergeStrategy;
     }
 
     /**
@@ -91,7 +91,7 @@ public final class MergeConfig {
      * @since 0.5.6
      */
     public int getParallelism() {
-        return this.parallelism;
+        return parallelism;
     }
 
     /**
@@ -106,27 +106,27 @@ public final class MergeConfig {
     @Override
     public String toString() {
         return "MergeConfig{" +
-            "handler=" + this.handler +
-            ", methodMergeStrategy=" + this.methodMergeStrategy +
-            ", fieldMergeStrategy=" + this.fieldMergeStrategy +
-            ", parallelism=" + this.parallelism +
+            "handler=" + handler +
+            ", methodMergeStrategy=" + methodMergeStrategy +
+            ", fieldMergeStrategy=" + fieldMergeStrategy +
+            ", parallelism=" + parallelism +
             '}';
     }
 
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || this.getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         final MergeConfig that = (MergeConfig) o;
-        return this.parallelism == that.parallelism
-            && this.handler.equals(that.handler)
-            && this.methodMergeStrategy == that.methodMergeStrategy &&
-            this.fieldMergeStrategy == that.fieldMergeStrategy;
+        return parallelism == that.parallelism
+            && handler.equals(that.handler)
+            && methodMergeStrategy == that.methodMergeStrategy &&
+            fieldMergeStrategy == that.fieldMergeStrategy;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.handler, this.methodMergeStrategy, this.fieldMergeStrategy, this.parallelism);
+        return Objects.hash(handler, methodMergeStrategy, fieldMergeStrategy, parallelism);
     }
 
     /**
@@ -207,7 +207,7 @@ public final class MergeConfig {
          * @return The merge config created from this builder. Never {@code null}.
          */
         public MergeConfig build() {
-            return new MergeConfig(this.handler, this.methodMergeStrategy, this.fieldMergeStrategy, this.parallelism);
+            return new MergeConfig(handler, methodMergeStrategy, fieldMergeStrategy, parallelism);
         }
     }
 }

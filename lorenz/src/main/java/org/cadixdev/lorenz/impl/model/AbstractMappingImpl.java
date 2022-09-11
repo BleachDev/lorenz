@@ -30,7 +30,6 @@ import org.cadixdev.lorenz.model.Mapping;
 import org.cadixdev.lorenz.util.MappingChangedListener;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -68,17 +67,17 @@ public abstract class AbstractMappingImpl<M extends Mapping<M, P>, P> implements
 
     @Override
     public String getObfuscatedName() {
-        return this.obfuscatedName;
+        return obfuscatedName;
     }
 
     @Override
     public String getDeobfuscatedName() {
-        return this.deobfuscatedName;
+        return deobfuscatedName;
     }
 
     @Override
     public M setDeobfuscatedName(final String deobfuscatedName) {
-        for (final MappingChangedListener<M, P> listener : this.listeners) {
+        for (final MappingChangedListener<M, P> listener : listeners) {
             listener.handle((M) this, deobfuscatedName);
         }
         this.deobfuscatedName = deobfuscatedName;
@@ -87,18 +86,18 @@ public abstract class AbstractMappingImpl<M extends Mapping<M, P>, P> implements
 
     @Override
     public M addListener(final MappingChangedListener<M, P> listener) {
-        this.listeners.add(listener);
+        listeners.add(listener);
         return (M) this;
     }
 
     @Override
     public void removeListener(final MappingChangedListener<M, P> listener) {
-        this.listeners.remove(listener);
+        listeners.remove(listener);
     }
 
     @Override
     public boolean hasDeobfuscatedName() {
-        return !Objects.equals(this.obfuscatedName, this.deobfuscatedName);
+        return !Objects.equals(obfuscatedName, deobfuscatedName);
     }
 
     @Override
@@ -108,18 +107,18 @@ public abstract class AbstractMappingImpl<M extends Mapping<M, P>, P> implements
 
     @Override
     public MappingSet getMappings() {
-        return this.mappings;
+        return mappings;
     }
 
     protected StringJoiner buildToString() {
-        return new StringJoiner(", ", this.getClass().getSimpleName() + "{", "}")
-                .add("obfuscatedName=" + this.obfuscatedName)
-                .add("deobfuscatedName=" + this.deobfuscatedName);
+        return new StringJoiner(", ", getClass().getSimpleName() + "{", "}")
+                .add("obfuscatedName=" + obfuscatedName)
+                .add("deobfuscatedName=" + deobfuscatedName);
     }
 
     @Override
     public String toString() {
-        return this.buildToString().toString();
+        return buildToString().toString();
     }
 
     @Override
@@ -127,14 +126,14 @@ public abstract class AbstractMappingImpl<M extends Mapping<M, P>, P> implements
         if (this == obj) return true;
         if (!(obj instanceof Mapping)) return false;
 
-        final Mapping that = (Mapping) obj;
-        return Objects.equals(this.obfuscatedName, that.getObfuscatedName()) &&
-                Objects.equals(this.deobfuscatedName, that.getDeobfuscatedName());
+        final Mapping<?, ?> that = (Mapping<?, ?>) obj;
+        return Objects.equals(obfuscatedName, that.getObfuscatedName()) &&
+                Objects.equals(deobfuscatedName, that.getDeobfuscatedName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.obfuscatedName, this.deobfuscatedName);
+        return Objects.hash(obfuscatedName, deobfuscatedName);
     }
 
 }

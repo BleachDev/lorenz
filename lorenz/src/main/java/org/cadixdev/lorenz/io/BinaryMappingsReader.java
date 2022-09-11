@@ -52,7 +52,7 @@ public abstract class BinaryMappingsReader extends MappingsReader {
 
     @Override
     public void close() throws IOException {
-        this.stream.close();
+        stream.close();
     }
 
 }

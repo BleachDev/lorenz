@@ -30,7 +30,6 @@ import org.cadixdev.bombe.type.MethodDescriptor;
 import org.cadixdev.bombe.type.Type;
 import org.cadixdev.lorenz.MappingSet;
 import org.cadixdev.lorenz.io.MappingsReader;
-import org.cadixdev.lorenz.io.TextMappingsReader;
 import org.cadixdev.lorenz.model.ClassMapping;
 import org.cadixdev.lorenz.model.Mapping;
 
@@ -53,7 +52,7 @@ public class FabricEnigmaReader extends EnigmaReader {
     protected ClassMapping<?, ?> readClassMapping(final MappingSet mappings, final String obfName) {
         // Fabric's fork of the Enigma format doesn't use full de-obfuscated
         // names when printing classes (practically this affects inner classes).
-        final Mapping<?, ?> mapping = this.stack.peek();
+        final Mapping<?, ?> mapping = stack.peek();
         if (mapping == null) {
             return mappings.getOrCreateTopLevelClassMapping(obfName);
         }

@@ -52,8 +52,8 @@ public class PGTypeReader extends StringReader {
      * @return A type
      */
     public Type readType() {
-        if (this.match("void")) return VoidType.INSTANCE;
-        return this.readFieldType();
+        if (match("void")) return VoidType.INSTANCE;
+        return readFieldType();
     }
 
     /**
@@ -62,14 +62,14 @@ public class PGTypeReader extends StringReader {
      * @return A field type
      */
     public FieldType readFieldType() {
-        while (this.available() && this.peek() != '[') {
-            this.advance();
+        while (available() && peek() != '[') {
+            advance();
         }
-        final FieldType type = getType(this.substring(0, this.index()));
-        if (!this.available()) return type;
+        final FieldType type = getType(substring(0, index()));
+        if (!available()) return type;
         int dims = 0;
-        while (this.available()) {
-            if (this.advance() == '[') {
+        while (available()) {
+            if (advance() == '[') {
                 dims++;
             }
         }
@@ -78,7 +78,7 @@ public class PGTypeReader extends StringReader {
 
     private boolean match(final String raw) {
         for (int i = 0; i < raw.toCharArray().length; i++) {
-            if (raw.toCharArray()[i] != this.peek(i)) {
+            if (raw.toCharArray()[i] != peek(i)) {
                 return false;
             }
         }

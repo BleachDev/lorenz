@@ -74,12 +74,12 @@ public class MappingSetMergerImpl implements MappingSetMerger {
     public MappingSetMergerImpl(final MappingSet left, final MappingSet right, final MergeConfig config) {
         this.left = left;
         this.right = right;
-        this.handler = config.getHandler();
-        this.methodMergeStrategy = config.getMethodMergeStrategy();
-        this.fieldMergeStrategy = config.getFieldMergeStrategy();
-        this.parallelism = config.getParallelism();
+        handler = config.getHandler();
+        methodMergeStrategy = config.getMethodMergeStrategy();
+        fieldMergeStrategy = config.getFieldMergeStrategy();
+        parallelism = config.getParallelism();
 
-        this.context = new MergeContext(this.left, this.right);
+        context = new MergeContext(this.left, this.right);
     }
 
     @Override
@@ -87,28 +87,28 @@ public class MappingSetMergerImpl implements MappingSetMerger {
         final HashSet<String> seenNames = new HashSet<>();
 
         final ExecutorService executor;
-        if (this.parallelism == -1) {
+        if (parallelism == -1) {
             executor = Executors.newWorkStealingPool();
         } else {
-            executor = Executors.newWorkStealingPool(this.parallelism);
+            executor = Executors.newWorkStealingPool(parallelism);
         }
 
         try {
-            final CompletableFuture<Void> leftFuture = CompletableFuture.allOf(this.left.getTopLevelClassMappings().stream()
+            final CompletableFuture<Void> leftFuture = CompletableFuture.allOf(left.getTopLevelClassMappings().stream()
                 .peek(mapping -> {
                     seenNames.add(mapping.getObfuscatedName());
                     seenNames.add(mapping.getDeobfuscatedName());
                 })
                 .map(mapping -> CompletableFuture.runAsync(() -> {
-                    final TopLevelClassMapping rightContinuation = this.right.getTopLevelClassMapping(mapping.getDeobfuscatedName()).orElse(null);
-                    final TopLevelClassMapping rightDuplicate = this.right.getTopLevelClassMapping(mapping.getObfuscatedName()).orElse(null);
-                    this.mergeTopLevelClassInternal(mapping, rightContinuation, rightDuplicate, target);
+                    final TopLevelClassMapping rightContinuation = right.getTopLevelClassMapping(mapping.getDeobfuscatedName()).orElse(null);
+                    final TopLevelClassMapping rightDuplicate = right.getTopLevelClassMapping(mapping.getObfuscatedName()).orElse(null);
+                    mergeTopLevelClassInternal(mapping, rightContinuation, rightDuplicate, target);
                 }, executor))
                 .toArray(CompletableFuture[]::new));
 
-            final CompletableFuture<Void> rightFuture = CompletableFuture.allOf(this.right.getTopLevelClassMappings().stream()
+            final CompletableFuture<Void> rightFuture = CompletableFuture.allOf(right.getTopLevelClassMappings().stream()
                 .filter(mapping -> !seenNames.contains(mapping.getObfuscatedName()))
-                .map(mapping -> CompletableFuture.runAsync(() -> this.mergeTopLevelClassInternal(null, mapping, null, target), executor))
+                .map(mapping -> CompletableFuture.runAsync(() -> mergeTopLevelClassInternal(null, mapping, null, target), executor))
                 .toArray(CompletableFuture[]::new));
 
             try {
@@ -126,9 +126,9 @@ public class MappingSetMergerImpl implements MappingSetMerger {
     @Override
     public TopLevelClassMapping mergeTopLevelClass(final TopLevelClassMapping left, final TopLevelClassMapping right, final MappingSet target) {
         if (left != null && right != null && left.getObfuscatedName().equals(right.getObfuscatedName())) {
-            return this.mergeTopLevelClassInternal(left, null, right, target);
+            return mergeTopLevelClassInternal(left, null, right, target);
         } else {
-            return this.mergeTopLevelClassInternal(left, right, null, target);
+            return mergeTopLevelClassInternal(left, right, null, target);
         }
     }
 
@@ -140,13 +140,13 @@ public class MappingSetMergerImpl implements MappingSetMerger {
     ) {
         final MergeResult<TopLevelClassMapping> mergeResult;
         if (left != null && rightDuplicate != null) {
-            mergeResult = this.handler.mergeDuplicateTopLevelClassMappings(left, rightDuplicate, rightContinuation, target, this.context);
+            mergeResult = handler.mergeDuplicateTopLevelClassMappings(left, rightDuplicate, rightContinuation, target, context);
         } else if (left != null && rightContinuation != null) {
-            mergeResult = this.handler.mergeTopLevelClassMappings(left, rightContinuation, target, this.context);
+            mergeResult = handler.mergeTopLevelClassMappings(left, rightContinuation, target, context);
         } else if (rightContinuation == null && left != null) {
-            mergeResult = this.handler.addLeftTopLevelClassMapping(left, target, this.context);
+            mergeResult = handler.addLeftTopLevelClassMapping(left, target, context);
         } else if (rightContinuation != null) {
-            mergeResult = this.handler.addRightTopLevelClassMapping(rightContinuation, target, this.context);
+            mergeResult = handler.addRightTopLevelClassMapping(rightContinuation, target, context);
         } else {
             throw new IllegalStateException("Cannot merge null mappings");
         }
@@ -157,10 +157,10 @@ public class MappingSetMergerImpl implements MappingSetMerger {
         }
 
         if (mergeResult.getMappingsToMap().isEmpty()) {
-            this.mergeClass(left, null, newMapping);
+            mergeClass(left, null, newMapping);
         } else {
             for (final TopLevelClassMapping mapping : mergeResult.getMappingsToMap()) {
-                this.mergeClass(left, mapping, newMapping);
+                mergeClass(left, mapping, newMapping);
             }
         }
 
@@ -170,9 +170,9 @@ public class MappingSetMergerImpl implements MappingSetMerger {
     @Override
     public InnerClassMapping mergeInnerClass(final InnerClassMapping left, final InnerClassMapping right, final ClassMapping<?, ?> target) {
         if (left != null && right != null && left.getObfuscatedName().equals(right.getObfuscatedName())) {
-            return this.mergeInnerClassInternal(left, null, right, target);
+            return mergeInnerClassInternal(left, null, right, target);
         } else {
-            return this.mergeInnerClassInternal(left, right, null, target);
+            return mergeInnerClassInternal(left, right, null, target);
         }
     }
 
@@ -184,13 +184,13 @@ public class MappingSetMergerImpl implements MappingSetMerger {
     ) {
         final MergeResult<InnerClassMapping> mergeResult;
         if (left != null && rightDuplicate != null) {
-            mergeResult = this.handler.mergeDuplicateInnerClassMappings(left, rightDuplicate, rightContinuation, target, this.context);
+            mergeResult = handler.mergeDuplicateInnerClassMappings(left, rightDuplicate, rightContinuation, target, context);
         } else if (left != null && rightContinuation != null) {
-            mergeResult = this.handler.mergeInnerClassMappings(left, rightContinuation, target, this.context);
+            mergeResult = handler.mergeInnerClassMappings(left, rightContinuation, target, context);
         } else if (rightContinuation == null && left != null) {
-            mergeResult = this.handler.addLeftInnerClassMapping(left, target, this.context);
+            mergeResult = handler.addLeftInnerClassMapping(left, target, context);
         } else if (rightContinuation != null) {
-            mergeResult = this.handler.addRightInnerClassMapping(rightContinuation, target,this.context);
+            mergeResult = handler.addRightInnerClassMapping(rightContinuation, target, context);
         } else {
             throw new IllegalStateException("Cannot merge null mappings");
         }
@@ -201,10 +201,10 @@ public class MappingSetMergerImpl implements MappingSetMerger {
         }
 
         if (mergeResult.getMappingsToMap().isEmpty()) {
-            this.mergeClass(left, null, newMapping);
+            mergeClass(left, null, newMapping);
         } else {
             for (final InnerClassMapping mapping : mergeResult.getMappingsToMap()) {
-                this.mergeClass(left, mapping, newMapping);
+                mergeClass(left, mapping, newMapping);
             }
         }
 
@@ -214,9 +214,9 @@ public class MappingSetMergerImpl implements MappingSetMerger {
     @Override
     public FieldMapping mergeField(final FieldMapping left, final FieldMapping right, final ClassMapping<?, ?> target) {
         if (left != null && right != null && left.getObfuscatedName().equals(right.getObfuscatedName())) {
-            return this.mergeFieldInternal(left, null, null, right, null, target);
+            return mergeFieldInternal(left, null, null, right, null, target);
         } else {
-            return this.mergeFieldInternal(left, right, null, null, null, target);
+            return mergeFieldInternal(left, right, null, null, null, target);
         }
     }
 
@@ -229,22 +229,22 @@ public class MappingSetMergerImpl implements MappingSetMerger {
         final ClassMapping<?, ?> target
     ) {
         if (left != null && (strictRightDuplicate != null || looseRightDuplicate != null)) {
-            return this.handler.mergeDuplicateFieldMappings(
+            return handler.mergeDuplicateFieldMappings(
                 left,
                 strictRightDuplicate,
                 looseRightDuplicate,
                 strictRightContinuation,
                 looseRightContinuation,
                 target,
-                this.context
+                context
             );
         } else if (left != null && (strictRightContinuation != null || looseRightContinuation != null)) {
-            return this.handler.mergeFieldMappings(left, strictRightContinuation, looseRightContinuation, target, this.context);
+            return handler.mergeFieldMappings(left, strictRightContinuation, looseRightContinuation, target, context);
         } else if ((strictRightContinuation == null && looseRightContinuation == null) && left != null) {
-            return this.handler.addLeftFieldMapping(left, target, this.context);
+            return handler.addLeftFieldMapping(left, target, context);
         } else if (strictRightContinuation != null) {
             // If left is not null then the only possible mapping left is strict, since there's nothing to wiggle against
-            return this.handler.addRightFieldMapping(strictRightContinuation, target,this.context);
+            return handler.addRightFieldMapping(strictRightContinuation, target, context);
         } else {
             throw new IllegalStateException("Cannot merge null mappings");
         }
@@ -253,9 +253,9 @@ public class MappingSetMergerImpl implements MappingSetMerger {
     @Override
     public MethodMapping mergeMethod(final MethodMapping left, final MethodMapping right, final ClassMapping<?, ?> target) {
         if (left != null && right != null && left.getSignature().equals(right.getDeobfuscatedSignature())) {
-            return this.mergeMethodInternal(left, null, null, right, null, target);
+            return mergeMethodInternal(left, null, null, right, null, target);
         } else {
-            return this.mergeMethodInternal(left, right, null, null, null, target);
+            return mergeMethodInternal(left, right, null, null, null, target);
         }
     }
 
@@ -269,22 +269,22 @@ public class MappingSetMergerImpl implements MappingSetMerger {
     ) {
         final MergeResult<MethodMapping> mergeResult;
         if (left != null && (strictRightDuplicate != null || looseRightDuplicate != null)) {
-            mergeResult = this.handler.mergeDuplicateMethodMappings(
+            mergeResult = handler.mergeDuplicateMethodMappings(
                 left,
                 strictRightDuplicate,
                 looseRightDuplicate,
                 strictRightContinuation,
                 looseRightContinuation,
                 target,
-                this.context
+                context
             );
         } else if (left != null && (strictRightContinuation != null || looseRightContinuation != null)) {
-            mergeResult = this.handler.mergeMethodMappings(left, strictRightContinuation, looseRightContinuation, target, this.context);
+            mergeResult = handler.mergeMethodMappings(left, strictRightContinuation, looseRightContinuation, target, context);
         } else if ((strictRightContinuation == null && looseRightContinuation == null) && left != null) {
-            mergeResult = this.handler.addLeftMethodMapping(left, target, this.context);
+            mergeResult = handler.addLeftMethodMapping(left, target, context);
         } else if (strictRightContinuation != null) {
             // If left is not null then the only possible mapping left is strict, since there's nothing to wiggle against
-            mergeResult = this.handler.addRightMethodMapping(strictRightContinuation, target, this.context);
+            mergeResult = handler.addRightMethodMapping(strictRightContinuation, target, context);
         } else {
             throw new IllegalStateException("Cannot merge null mappings");
         }
@@ -295,10 +295,10 @@ public class MappingSetMergerImpl implements MappingSetMerger {
         }
 
         if (mergeResult.getMappingsToMap().isEmpty()) {
-            this.mergeMethodInto(left, null, newMapping);
+            mergeMethodInto(left, null, newMapping);
         } else {
             for (final MethodMapping mapping : mergeResult.getMappingsToMap()) {
-                this.mergeMethodInto(left, mapping, newMapping);
+                mergeMethodInto(left, mapping, newMapping);
             }
         }
 
@@ -316,14 +316,14 @@ public class MappingSetMergerImpl implements MappingSetMerger {
                 } else {
                     rightMapping = null;
                 }
-                this.mergeMethodParameter(leftMapping, rightMapping, newMapping);
+                mergeMethodParameter(leftMapping, rightMapping, newMapping);
                 seenIndexes.add(leftMapping.getIndex());
             }
         }
         if (right != null) {
             for (final MethodParameterMapping rightMapping : right.getParameterMappings()) {
                 if (!seenIndexes.contains(rightMapping.getIndex())) {
-                    this.mergeMethodParameter(null, rightMapping, newMapping);
+                    mergeMethodParameter(null, rightMapping, newMapping);
                 }
             }
         }
@@ -336,11 +336,11 @@ public class MappingSetMergerImpl implements MappingSetMerger {
         final MethodMapping target
     ) {
         if (left != null && right != null) {
-            return this.handler.mergeParameterMappings(left, right, target, this.context);
+            return handler.mergeParameterMappings(left, right, target, context);
         } else if (right == null && left != null) {
-            return this.handler.addLeftParameterMapping(left, target, this.context);
+            return handler.addLeftParameterMapping(left, target, context);
         } else if (right != null) {
-            return this.handler.addRightParameterMapping(right, target, this.context);
+            return handler.addRightParameterMapping(right, target, context);
         } else {
             throw new IllegalStateException("Cannot merge 2 null mappings");
         }
@@ -364,7 +364,7 @@ public class MappingSetMergerImpl implements MappingSetMerger {
                     rightContinuation = null;
                     rightDuplicate = null;
                 }
-                this.mergeInnerClassInternal(leftMapping, rightContinuation, rightDuplicate, newMapping);
+                mergeInnerClassInternal(leftMapping, rightContinuation, rightDuplicate, newMapping);
                 seenClasses.add(leftMapping.getObfuscatedName());
                 seenClasses.add(leftMapping.getDeobfuscatedName());
             }
@@ -372,7 +372,7 @@ public class MappingSetMergerImpl implements MappingSetMerger {
         if (right != null) {
             for (final InnerClassMapping rightMapping : right.getInnerClassMappings()) {
                 if (!seenClasses.contains(rightMapping.getObfuscatedName())) {
-                    this.mergeInnerClassInternal(null, rightMapping, null, newMapping);
+                    mergeInnerClassInternal(null, rightMapping, null, newMapping);
                 }
             }
         }
@@ -389,7 +389,7 @@ public class MappingSetMergerImpl implements MappingSetMerger {
                     strictRightContinuation = right.getFieldMapping(leftMapping.getDeobfuscatedSignature()).orElse(null);
                     strictRightDuplicate = right.getFieldMapping(leftMapping.getSignature()).orElse(null);
 
-                    if (this.fieldMergeStrategy == FieldMergeStrategy.LOOSE) {
+                    if (fieldMergeStrategy == FieldMergeStrategy.LOOSE) {
                         // We filter out loose matches which simply match to the same instance as those aren't actually loose
                         looseRightContinuation = right.getFieldMapping(leftMapping.getDeobfuscatedName())
                             .filter(m -> !m.equals(strictRightContinuation)).orElse(null);
@@ -406,7 +406,7 @@ public class MappingSetMergerImpl implements MappingSetMerger {
                     looseRightDuplicate = null;
                 }
 
-                this.mergeFieldInternal(
+                mergeFieldInternal(
                     leftMapping,
                     strictRightContinuation,
                     looseRightContinuation,
@@ -417,7 +417,7 @@ public class MappingSetMergerImpl implements MappingSetMerger {
                 seenFields.add(leftMapping.getSignature());
                 seenFields.add(leftMapping.getDeobfuscatedSignature());
 
-                if (this.fieldMergeStrategy == FieldMergeStrategy.LOOSE) {
+                if (fieldMergeStrategy == FieldMergeStrategy.LOOSE) {
                     seenFieldNames.add(leftMapping.getObfuscatedName());
                     seenFieldNames.add(leftMapping.getDeobfuscatedName());
                 }
@@ -426,7 +426,7 @@ public class MappingSetMergerImpl implements MappingSetMerger {
         if (right != null) {
             for (final FieldMapping rightMapping : right.getFieldMappings()) {
                 if (!seenFieldNames.contains(rightMapping.getObfuscatedName()) && !seenFields.contains(rightMapping.getSignature())) {
-                    this.mergeFieldInternal(null, rightMapping, null, null, null, newMapping);
+                    mergeFieldInternal(null, rightMapping, null, null, null, newMapping);
                 }
             }
         }
@@ -451,7 +451,7 @@ public class MappingSetMergerImpl implements MappingSetMerger {
                     strictRightContinuation = right.getMethodMapping(leftMapping.getDeobfuscatedSignature()).orElse(null);
                     strictRightDuplicate = right.getMethodMapping(leftMapping.getSignature()).orElse(null);
 
-                    if (this.methodMergeStrategy == MethodMergeStrategy.LOOSE) {
+                    if (methodMergeStrategy == MethodMergeStrategy.LOOSE) {
                         looseRightContinuation = right.getMethodMapping(looseContinuationSig).orElse(null);
                         looseRightDuplicate = right.getMethodMapping(looseDupSig).orElse(null);
                     } else {
@@ -465,7 +465,7 @@ public class MappingSetMergerImpl implements MappingSetMerger {
                     looseRightDuplicate = null;
                 }
 
-                this.mergeMethodInternal(
+                mergeMethodInternal(
                     leftMapping,
                     strictRightContinuation,
                     looseRightContinuation,
@@ -476,7 +476,7 @@ public class MappingSetMergerImpl implements MappingSetMerger {
                 seenMethods.add(leftMapping.getSignature());
                 seenMethods.add(leftMapping.getDeobfuscatedSignature());
 
-                if (this.methodMergeStrategy == MethodMergeStrategy.LOOSE) {
+                if (methodMergeStrategy == MethodMergeStrategy.LOOSE) {
                     seenMethods.add(looseContinuationSig);
                     seenMethods.add(looseDupSig);
                 }
@@ -485,7 +485,7 @@ public class MappingSetMergerImpl implements MappingSetMerger {
         if (right != null) {
             for (final MethodMapping rightMapping : right.getMethodMappings()) {
                 if (!seenMethods.contains(rightMapping.getSignature())) {
-                    this.mergeMethodInternal(null, rightMapping, null, null, null, newMapping);
+                    mergeMethodInternal(null, rightMapping, null, null, null, newMapping);
                 }
             }
         }

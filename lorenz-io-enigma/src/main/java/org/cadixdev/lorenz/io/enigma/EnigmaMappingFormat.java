@@ -25,16 +25,12 @@
 
 package org.cadixdev.lorenz.io.enigma;
 
-import org.cadixdev.lorenz.io.MappingFormat;
 import org.cadixdev.lorenz.io.MappingsReader;
 import org.cadixdev.lorenz.io.MappingsWriter;
 import org.cadixdev.lorenz.io.TextMappingFormat;
 
 import java.io.Reader;
 import java.io.Writer;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -46,7 +42,7 @@ import java.util.regex.Pattern;
  */
 public class EnigmaMappingFormat implements TextMappingFormat {
 
-    public static EnigmaMappingFormat INSTANCE = new EnigmaMappingFormat();
+    public static final EnigmaMappingFormat INSTANCE = new EnigmaMappingFormat();
 
     /**
      * A regex expression used to remove comments from lines.
@@ -54,7 +50,7 @@ public class EnigmaMappingFormat implements TextMappingFormat {
     private static final Pattern COMMENT_PATTERN = Pattern.compile("#.*");
 
     /**
-     * The <code>"mapping"</code> file extension, as used by both
+     * The {@code "mapping"} file extension, as used by both
      * cuchaz's mapping project and Fabric's Yarn mappings.
      */
     public static final String MAPPING_EXTENSION = "mapping";

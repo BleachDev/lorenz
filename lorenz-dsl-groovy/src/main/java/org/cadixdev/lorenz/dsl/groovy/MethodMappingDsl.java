@@ -56,7 +56,7 @@ public class MethodMappingDsl extends MappingDsl<MethodMapping, ClassMapping> {
             final int index,
             @DelegatesTo(strategy = DslUtil.RESOLVE_STRATEGY, value = MappingDsl.class) final Closure<?> script) {
         return DslUtil.delegate(
-                this.mapping.getOrCreateParameterMapping(index),
+                mapping.getOrCreateParameterMapping(index),
                 MappingDsl::new, script);
     }
 

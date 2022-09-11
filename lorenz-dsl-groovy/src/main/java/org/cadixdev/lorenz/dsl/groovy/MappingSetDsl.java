@@ -68,7 +68,7 @@ public class MappingSetDsl {
             final String name,
             @DelegatesTo(strategy = DslUtil.RESOLVE_STRATEGY, value = ClassMappingDsl.class) final Closure<?> script) {
         return DslUtil.delegate(
-                this.mappings.getOrCreateTopLevelClassMapping(name),
+                mappings.getOrCreateTopLevelClassMapping(name),
                 ClassMappingDsl::new, script);
     }
 

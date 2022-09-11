@@ -28,7 +28,6 @@ package org.cadixdev.lorenz.test.merge;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.cadixdev.lorenz.MappingSet;
-import org.cadixdev.lorenz.io.MappingFormat;
 import org.cadixdev.lorenz.io.searge.tsrg.TSrgMappingFormat;
 import org.cadixdev.lorenz.merge.FieldMergeStrategy;
 import org.cadixdev.lorenz.merge.MappingSetMerger;

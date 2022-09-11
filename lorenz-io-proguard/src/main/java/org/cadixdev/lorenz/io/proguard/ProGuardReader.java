@@ -65,7 +65,7 @@ public class ProGuardReader extends TextMappingsReader {
             // remove the trailing :
             final String deobf = params[2].substring(0, params[2].length() - 1).replace('.', '/');
 
-            this.currentClass = mappings.getOrCreateClassMapping(obf)
+            currentClass = mappings.getOrCreateClassMapping(obf)
                     .setDeobfuscatedName(deobf);
         }
 
@@ -91,13 +91,13 @@ public class ProGuardReader extends TextMappingsReader {
                         .map(PGTypeReader::readFieldType)
                         .collect(Collectors.toList());
 
-                this.currentClass.getOrCreateMethodMapping(obfName, new MethodDescriptor(paramTypes, returnClean))
+                currentClass.getOrCreateMethodMapping(obfName, new MethodDescriptor(paramTypes, returnClean))
                         .setDeobfuscatedName(deobf);
             }
             // field
             else {
                 final FieldSignature fieldSignature = new FieldSignature(obf, new PGTypeReader(returnTypeRaw).readFieldType());
-                this.currentClass.getOrCreateFieldMapping(fieldSignature)
+                currentClass.getOrCreateFieldMapping(fieldSignature)
                         .setDeobfuscatedName(deobf);
             }
         }

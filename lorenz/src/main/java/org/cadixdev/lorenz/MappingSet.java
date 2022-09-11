@@ -80,7 +80,7 @@ public class MappingSet implements Reversible<MappingSet, MappingSet>, Iterable<
      * @return The model factory
      */
     public MappingSetModelFactory getModelFactory() {
-        return this.modelFactory;
+        return modelFactory;
     }
 
     /**
@@ -90,7 +90,7 @@ public class MappingSet implements Reversible<MappingSet, MappingSet>, Iterable<
      * @return The top-level class mappings
      */
     public Collection<TopLevelClassMapping> getTopLevelClassMappings() {
-        return Collections.unmodifiableCollection(this.topLevelClasses.values());
+        return Collections.unmodifiableCollection(topLevelClasses.values());
     }
 
     /**
@@ -102,9 +102,9 @@ public class MappingSet implements Reversible<MappingSet, MappingSet>, Iterable<
      * @return The top-level class mapping, to allow for chaining
      */
     public TopLevelClassMapping createTopLevelClassMapping(final String obfuscatedName, final String deobfuscatedName) {
-        return this.topLevelClasses.compute(obfuscatedName.replace('.', '/'), (name, existingMapping) -> {
+        return topLevelClasses.compute(obfuscatedName.replace('.', '/'), (name, existingMapping) -> {
             if (existingMapping != null) return existingMapping.setDeobfuscatedName(deobfuscatedName);
-            return this.getModelFactory().createTopLevelClassMapping(this, name, deobfuscatedName);
+            return getModelFactory().createTopLevelClassMapping(this, name, deobfuscatedName);
         });
     }
 
@@ -116,7 +116,7 @@ public class MappingSet implements Reversible<MappingSet, MappingSet>, Iterable<
      * @return The top-level class mapping, wrapped in an {@link Optional}
      */
     public Optional<TopLevelClassMapping> getTopLevelClassMapping(final String obfuscatedName) {
-        return Optional.ofNullable(this.topLevelClasses.get(obfuscatedName.replace('.', '/')));
+        return Optional.ofNullable(topLevelClasses.get(obfuscatedName.replace('.', '/')));
     }
 
     /**
@@ -127,8 +127,8 @@ public class MappingSet implements Reversible<MappingSet, MappingSet>, Iterable<
      * @return The top-level class mapping
      */
     public TopLevelClassMapping getOrCreateTopLevelClassMapping(final String obfuscatedName) {
-        return this.getTopLevelClassMapping(obfuscatedName)
-                .orElseGet(() -> this.createTopLevelClassMapping(obfuscatedName, obfuscatedName));
+        return getTopLevelClassMapping(obfuscatedName)
+                .orElseGet(() -> createTopLevelClassMapping(obfuscatedName, obfuscatedName));
     }
 
     /**
@@ -142,7 +142,7 @@ public class MappingSet implements Reversible<MappingSet, MappingSet>, Iterable<
      *         {@code false} otherwise
      */
     public boolean hasTopLevelClassMapping(final String obfuscatedName) {
-        return this.topLevelClasses.containsKey(obfuscatedName.replace('.', '/'));
+        return topLevelClasses.containsKey(obfuscatedName.replace('.', '/'));
     }
 
     /**
@@ -153,14 +153,14 @@ public class MappingSet implements Reversible<MappingSet, MappingSet>, Iterable<
      */
     public Optional<? extends ClassMapping<?, ?>> getClassMapping(final String obfuscatedName) {
         final int lastIndex = obfuscatedName.lastIndexOf('$');
-        if (lastIndex == -1) return this.getTopLevelClassMapping(obfuscatedName);
+        if (lastIndex == -1) return getTopLevelClassMapping(obfuscatedName);
 
         // Split the obfuscated name, to fetch the parent class name, and inner class name
         final String parentClassName = obfuscatedName.substring(0, lastIndex);
         final String innerClassName = obfuscatedName.substring(lastIndex + 1);
 
         // Get the parent class
-        return this.getClassMapping(parentClassName)
+        return getClassMapping(parentClassName)
                 // Get and return the inner class
                 .flatMap(parentClassMapping -> parentClassMapping.getInnerClassMapping(innerClassName));
     }
@@ -171,7 +171,7 @@ public class MappingSet implements Reversible<MappingSet, MappingSet>, Iterable<
      * @param obfuscatedName The class name to remove.
      */
     public void removeClassMapping(final String obfuscatedName) {
-        this.getClassMapping(obfuscatedName).ifPresent(this::removeClassMapping);
+        getClassMapping(obfuscatedName).ifPresent(this::removeClassMapping);
     }
 
     /**
@@ -183,7 +183,7 @@ public class MappingSet implements Reversible<MappingSet, MappingSet>, Iterable<
         if (mapping instanceof InnerClassMapping) {
             ((InnerClassMapping) mapping).getParent().removeInnerClassMapping(mapping);
         } else {
-            this.topLevelClasses.values().remove(mapping);
+            topLevelClasses.values().remove(mapping);
         }
     }
 
@@ -202,14 +202,14 @@ public class MappingSet implements Reversible<MappingSet, MappingSet>, Iterable<
      */
     public Optional<? extends ClassMapping<?, ?>> computeClassMapping(final String obfuscatedName) {
         final int lastIndex = obfuscatedName.lastIndexOf('$');
-        if (lastIndex == -1) return this.getTopLevelClassMapping(obfuscatedName);
+        if (lastIndex == -1) return getTopLevelClassMapping(obfuscatedName);
 
         // Split the obfuscated name, to fetch the parent class name, and inner class name
         final String parentClassName = obfuscatedName.substring(0, lastIndex);
         final String innerClassName = obfuscatedName.substring(lastIndex + 1);
 
         // Get the parent class
-        return this.getClassMapping(parentClassName)
+        return getClassMapping(parentClassName)
                 // Get and return the inner class
                 .map(parentClassMapping -> parentClassMapping.getOrCreateInnerClassMapping(innerClassName));
     }
@@ -223,14 +223,14 @@ public class MappingSet implements Reversible<MappingSet, MappingSet>, Iterable<
      */
     public ClassMapping<?, ?> getOrCreateClassMapping(final String obfuscatedName) {
         final int lastIndex = obfuscatedName.lastIndexOf('$');
-        if (lastIndex == -1) return this.getOrCreateTopLevelClassMapping(obfuscatedName);
+        if (lastIndex == -1) return getOrCreateTopLevelClassMapping(obfuscatedName);
 
         // Split the obfuscated name, to fetch the parent class name, and inner class name
         final String parentClassName = obfuscatedName.substring(0, lastIndex);
         final String innerClassName = obfuscatedName.substring(lastIndex + 1);
 
         // Get the parent class
-        final ClassMapping parentClass = this.getOrCreateClassMapping(parentClassName);
+        final ClassMapping parentClass = getOrCreateClassMapping(parentClassName);
 
         // Get the inner class
         return parentClass.getOrCreateInnerClassMapping(innerClassName);
@@ -245,7 +245,7 @@ public class MappingSet implements Reversible<MappingSet, MappingSet>, Iterable<
      */
     public Type deobfuscate(final Type type) {
         if (type instanceof FieldType) {
-            return this.deobfuscate((FieldType) type);
+            return deobfuscate((FieldType) type);
         }
         return type;
     }
@@ -260,7 +260,7 @@ public class MappingSet implements Reversible<MappingSet, MappingSet>, Iterable<
     public FieldType deobfuscate(final FieldType type) {
         if (type instanceof ArrayType) {
             final ArrayType arr = (ArrayType) type;
-            final FieldType component = this.deobfuscate(arr.getComponent());
+            final FieldType component = deobfuscate(arr.getComponent());
             return component == arr.getComponent() ?
                     arr :
                     new ArrayType(arr.getDimCount(), component);
@@ -270,7 +270,7 @@ public class MappingSet implements Reversible<MappingSet, MappingSet>, Iterable<
 
             final String[] name = obj.getClassName().split("\\$");
 
-            ClassMapping<?, ?> currentClass = this.getClassMapping(name[0]).orElse(null);
+            ClassMapping<?, ?> currentClass = getClassMapping(name[0]).orElse(null);
             if (currentClass == null) {
                 return type;
             }
@@ -304,7 +304,7 @@ public class MappingSet implements Reversible<MappingSet, MappingSet>, Iterable<
                 descriptor.getParamTypes().stream()
                         .map(this::deobfuscate)
                         .collect(Collectors.toList()),
-                this.deobfuscate(descriptor.getReturnType())
+                deobfuscate(descriptor.getReturnType())
         );
     }
 
@@ -315,12 +315,12 @@ public class MappingSet implements Reversible<MappingSet, MappingSet>, Iterable<
      * @since 0.5.0
      */
     public MappingSet reverse() {
-        return this.reverse(this.createMappingSet());
+        return reverse(createMappingSet());
     }
 
     @Override
     public MappingSet reverse(final MappingSet parent) {
-        this.getTopLevelClassMappings().forEach(klass -> klass.reverse(parent));
+        getTopLevelClassMappings().forEach(klass -> klass.reverse(parent));
         return parent;
     }
 
@@ -333,7 +333,7 @@ public class MappingSet implements Reversible<MappingSet, MappingSet>, Iterable<
      * @since 0.5.0
      */
     public MappingSet merge(final MappingSet with) {
-        return this.merge(with, this.createMappingSet());
+        return merge(with, createMappingSet());
     }
 
     /**
@@ -356,18 +356,18 @@ public class MappingSet implements Reversible<MappingSet, MappingSet>, Iterable<
      * @since 0.5.0
      */
     public MappingSet copy() {
-        final MappingSet mappings = this.createMappingSet();
-        this.getTopLevelClassMappings().forEach(klass -> klass.copy(mappings));
+        final MappingSet mappings = createMappingSet();
+        getTopLevelClassMappings().forEach(klass -> klass.copy(mappings));
         return mappings;
     }
 
     @Override
     public Iterator<TopLevelClassMapping> iterator() {
-        return this.topLevelClasses.values().iterator();
+        return topLevelClasses.values().iterator();
     }
 
     protected MappingSet createMappingSet() {
-        return new MappingSet(this.modelFactory);
+        return new MappingSet(modelFactory);
     }
 
 }

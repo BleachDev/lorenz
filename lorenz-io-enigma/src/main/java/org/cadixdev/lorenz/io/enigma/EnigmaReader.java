@@ -84,8 +84,8 @@ public class EnigmaReader extends TextMappingsReader {
 
         // If there is a change in the indentation level, we will need to pop the stack
         // as needed
-        while (indentLevel < this.stack.size()) {
-            this.stack.pop();
+        while (indentLevel < stack.size()) {
+            stack.pop();
         }
 
         final String line = EnigmaMappingFormat.INSTANCE.removeComments(rawLine).trim();
@@ -98,48 +98,48 @@ public class EnigmaReader extends TextMappingsReader {
         // Establish the type of mapping
         final String key = split[0];
         if (key.equals(CLASS_MAPPING_KEY) && len == CLASS_MAPPING_ELEMENT_WITHOUT_DEOBF_COUNT) {
-            final String obfName = this.convertClassName(split[1]);
-            this.stack.push(this.readClassMapping(mappings, obfName));
+            final String obfName = convertClassName(split[1]);
+            stack.push(readClassMapping(mappings, obfName));
         } else if (key.equals(CLASS_MAPPING_KEY) && len == CLASS_MAPPING_ELEMENT_WITH_DEOBF_COUNT) {
-            final String obfName = this.convertClassName(split[1]);
-            final String deobfName = this.convertClassName(split[2]);
-            this.stack.push(this.readClassMapping(mappings, obfName)
+            final String obfName = convertClassName(split[1]);
+            final String deobfName = convertClassName(split[2]);
+            stack.push(readClassMapping(mappings, obfName)
                     .setDeobfuscatedName(deobfName));
         } else if (key.equals(FIELD_MAPPING_KEY) && len == FIELD_MAPPING_ELEMENT_COUNT) {
             final String obfName = split[1];
             final String deobfName = split[2];
-            final String type = this.convertFieldType(FieldType.of(split[3])).toString();
-            this.peekClass().getOrCreateFieldMapping(obfName, type)
+            final String type = convertFieldType(FieldType.of(split[3])).toString();
+            peekClass().getOrCreateFieldMapping(obfName, type)
                     .setDeobfuscatedName(deobfName);
         } else if (key.equals(METHOD_MAPPING_KEY) && len == METHOD_MAPPING_ELEMENT_WITHOUT_DEOBF_COUNT) {
             final String obfName = split[1];
-            final String descriptor = this.convertDescriptor(MethodDescriptor.of(split[2])).toString();
-            this.stack.push(this.peekClass().getOrCreateMethodMapping(obfName, descriptor));
+            final String descriptor = convertDescriptor(MethodDescriptor.of(split[2])).toString();
+            stack.push(peekClass().getOrCreateMethodMapping(obfName, descriptor));
         } else if (key.equals(METHOD_MAPPING_KEY) && len == METHOD_MAPPING_ELEMENT_WITH_DEOBF_COUNT) {
             final String obfName = split[1];
             final String deobfName = split[2];
-            final String descriptor = this.convertDescriptor(MethodDescriptor.of(split[3])).toString();
-            this.stack.push(this.peekClass().getOrCreateMethodMapping(obfName, descriptor)
+            final String descriptor = convertDescriptor(MethodDescriptor.of(split[3])).toString();
+            stack.push(peekClass().getOrCreateMethodMapping(obfName, descriptor)
                     .setDeobfuscatedName(deobfName));
         } else if (key.equals(PARAM_MAPPING_KEY) && len == PARAM_MAPPING_ELEMENT_COUNT) {
             final int index = Integer.parseInt(split[1]);
             final String deobfName = split[2];
-            this.peekMethod().getOrCreateParameterMapping(index)
+            peekMethod().getOrCreateParameterMapping(index)
                     .setDeobfuscatedName(deobfName);
         } else if (key.equals(COMMENT_MAPPING_KEY)) {
             final String comment = split.length == 1 ? "" : rawLine.substring(split[0].length() + 1);
-            this.stack.peek().getJavadoc().add(comment);
+            stack.peek().getJavadoc().add(comment);
         }
     }
 
     protected ClassMapping<?, ?> peekClass() {
-        if (!(this.stack.peek() instanceof ClassMapping)) throw new UnsupportedOperationException("Not a class on the stack!");
-        return (ClassMapping<?, ?>) this.stack.peek();
+        if (!(stack.peek() instanceof ClassMapping)) throw new UnsupportedOperationException("Not a class on the stack!");
+        return (ClassMapping<?, ?>) stack.peek();
     }
 
     protected MethodMapping peekMethod() {
-        if (!(this.stack.peek() instanceof MethodMapping)) throw new UnsupportedOperationException("Not a method on the stack!");
-        return (MethodMapping) this.stack.peek();
+        if (!(stack.peek() instanceof MethodMapping)) throw new UnsupportedOperationException("Not a method on the stack!");
+        return (MethodMapping) stack.peek();
     }
 
     protected ClassMapping<?, ?> readClassMapping(final MappingSet mappings, final String obfName) {
@@ -155,7 +155,7 @@ public class EnigmaReader extends TextMappingsReader {
 
     protected Type convertType(final Type type) {
         if (type instanceof FieldType) {
-            return this.convertFieldType((FieldType) type);
+            return convertFieldType((FieldType) type);
         }
         return type;
     }
@@ -163,11 +163,11 @@ public class EnigmaReader extends TextMappingsReader {
     protected FieldType convertFieldType(final FieldType type) {
         if (type instanceof ArrayType) {
             final ArrayType arr = (ArrayType) type;
-            return new ArrayType(arr.getDimCount(), this.convertFieldType(arr.getComponent()));
+            return new ArrayType(arr.getDimCount(), convertFieldType(arr.getComponent()));
         }
         if (type instanceof ObjectType) {
             final ObjectType obj = (ObjectType) type;
-            return new ObjectType(this.convertClassName(obj.getClassName()));
+            return new ObjectType(convertClassName(obj.getClassName()));
         }
         return type;
     }
@@ -177,7 +177,7 @@ public class EnigmaReader extends TextMappingsReader {
                 descriptor.getParamTypes().stream()
                         .map(this::convertFieldType)
                         .collect(Collectors.toList()),
-                this.convertType(descriptor.getReturnType())
+                convertType(descriptor.getReturnType())
         );
     }
 

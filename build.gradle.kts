@@ -59,7 +59,7 @@ subprojects {
     }
 
     configure<LicenseExtension> {
-        setHeader(rootProject.file("HEADER.txt"));
+        setHeader(rootProject.file("HEADER.txt"))
     }
 
     tasks.withType<JavaCompile>().configureEach {

@@ -55,7 +55,7 @@ public interface MethodMapping extends MemberMapping<MethodMapping, ClassMapping
      * @since 0.5.0
      */
     default MethodSignature getDeobfuscatedSignature() {
-       return new MethodSignature(this.getDeobfuscatedName(), this.getMappings().deobfuscate(this.getDescriptor()));
+       return new MethodSignature(getDeobfuscatedName(), getMappings().deobfuscate(getDescriptor()));
     }
 
     /**
@@ -65,7 +65,7 @@ public interface MethodMapping extends MemberMapping<MethodMapping, ClassMapping
      * @see MethodSignature#getDescriptor()
      */
     default MethodDescriptor getDescriptor() {
-        return this.getSignature().getDescriptor();
+        return getSignature().getDescriptor();
     }
 
     /**
@@ -76,7 +76,7 @@ public interface MethodMapping extends MemberMapping<MethodMapping, ClassMapping
      * @see MethodDescriptor#toString()
      */
     default String getObfuscatedDescriptor() {
-        return this.getDescriptor().toString();
+        return getDescriptor().toString();
     }
 
     /**
@@ -87,7 +87,7 @@ public interface MethodMapping extends MemberMapping<MethodMapping, ClassMapping
      * @see MappingSet#deobfuscate(MethodDescriptor)
      */
     default String getDeobfuscatedDescriptor() {
-        return this.getDeobfuscatedSignature().getDescriptor().toString();
+        return getDeobfuscatedSignature().getDescriptor().toString();
     }
 
     /**
@@ -129,8 +129,8 @@ public interface MethodMapping extends MemberMapping<MethodMapping, ClassMapping
      * @since 0.4.0
      */
     default MethodParameterMapping getOrCreateParameterMapping(final int index) {
-        return this.getParameterMapping(index)
-                .orElseGet(() -> this.createParameterMapping(index, String.valueOf(index)));
+        return getParameterMapping(index)
+                .orElseGet(() -> createParameterMapping(index, String.valueOf(index)));
     }
 
     /**
@@ -153,36 +153,36 @@ public interface MethodMapping extends MemberMapping<MethodMapping, ClassMapping
      * @since 0.4.0
      */
     default boolean hasMappings() {
-        return this.hasDeobfuscatedName() ||
-                this.getParameterMappings().stream().anyMatch(Mapping::hasDeobfuscatedName);
+        return hasDeobfuscatedName() ||
+                getParameterMappings().stream().anyMatch(Mapping::hasDeobfuscatedName);
     }
 
     @Override
     default String getFullObfuscatedName() {
-        return String.format("%s/%s", this.getParent().getFullObfuscatedName(), this.getObfuscatedName());
+        return String.format("%s/%s", getParent().getFullObfuscatedName(), getObfuscatedName());
     }
 
     @Override
     default String getFullDeobfuscatedName() {
-        return String.format("%s/%s", this.getParent().getFullDeobfuscatedName(), this.getDeobfuscatedName());
+        return String.format("%s/%s", getParent().getFullDeobfuscatedName(), getDeobfuscatedName());
     }
 
     @Override
     default MethodMapping reverse(final ClassMapping parent) {
-        final MethodMapping mapping = parent.createMethodMapping(this.getDeobfuscatedSignature(), this.getObfuscatedName());
-        this.getParameterMappings().forEach(param -> param.reverse(mapping));
+        final MethodMapping mapping = parent.createMethodMapping(getDeobfuscatedSignature(), getObfuscatedName());
+        getParameterMappings().forEach(param -> param.reverse(mapping));
         return mapping;
     }
 
     @Override
     default MethodMapping merge(final MethodMapping with, final ClassMapping parent) {
-        return MappingSetMerger.create(this.getMappings(), with.getMappings()).mergeMethod(this, with, parent);
+        return MappingSetMerger.create(getMappings(), with.getMappings()).mergeMethod(this, with, parent);
     }
 
     @Override
     default MethodMapping copy(final ClassMapping parent) {
-        final MethodMapping mapping = parent.createMethodMapping(this.getSignature(), this.getDeobfuscatedName());
-        this.getParameterMappings().forEach(param -> param.copy(mapping));
+        final MethodMapping mapping = parent.createMethodMapping(getSignature(), getDeobfuscatedName());
+        getParameterMappings().forEach(param -> param.copy(mapping));
         return mapping;
     }
 

@@ -54,7 +54,7 @@ public class MappingSetModelFactoryImpl implements MappingSetModelFactory {
      *
      * @since 0.6.0
      */
-    public static MappingSetModelFactory INSTANCE = new MappingSetModelFactoryImpl();
+    public static final MappingSetModelFactory INSTANCE = new MappingSetModelFactoryImpl();
 
     @Override
     public TopLevelClassMapping createTopLevelClassMapping(final MappingSet parent, final String obfuscatedName, final String deobfuscatedName) {

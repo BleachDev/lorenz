@@ -151,7 +151,7 @@ public interface MappingSetMergerHandler {
         final MappingSet target,
         final MergeContext context
     ) {
-        return this.addRightTopLevelClassMapping(right, target, context);
+        return addRightTopLevelClassMapping(right, target, context);
     }
 
     /**
@@ -230,7 +230,7 @@ public interface MappingSetMergerHandler {
         final ClassMapping<?, ?> target,
         final MergeContext context
     ) {
-        return this.addRightInnerClassMapping(right, target, context);
+        return addRightInnerClassMapping(right, target, context);
     }
 
     /**
@@ -401,9 +401,9 @@ public interface MappingSetMergerHandler {
         final MergeContext context
     ) {
         if (strictRightDuplicate != null) {
-            return this.addRightFieldMapping(strictRightDuplicate, target, context);
+            return addRightFieldMapping(strictRightDuplicate, target, context);
         } else {
-            return this.addRightFieldMapping(looseRightDuplicate, target, context);
+            return addRightFieldMapping(looseRightDuplicate, target, context);
         }
     }
 
@@ -582,9 +582,9 @@ public interface MappingSetMergerHandler {
         final MergeContext context
     ) {
         if (strictRightDuplicate != null) {
-            return this.addRightMethodMapping(strictRightDuplicate, target, context);
+            return addRightMethodMapping(strictRightDuplicate, target, context);
         } else {
-            return this.addRightMethodMapping(looseRightDuplicate, target, context);
+            return addRightMethodMapping(looseRightDuplicate, target, context);
         }
     }
 

@@ -70,7 +70,7 @@ public class MergeResult<T> {
      */
     public MergeResult(final T result) {
         this.result = result;
-        this.mappingsToMap = Collections.emptyList();
+        mappingsToMap = Collections.emptyList();
     }
 
     /**
@@ -80,7 +80,7 @@ public class MergeResult<T> {
      */
     public MergeResult(final T result, final T mappingToMerge) {
         this.result = Objects.requireNonNull(result, "Merge action result must not be null");
-        this.mappingsToMap = Collections.singletonList(Objects.requireNonNull(mappingToMerge, "Merge action mapping must not be null"));
+        mappingsToMap = Collections.singletonList(Objects.requireNonNull(mappingToMerge, "Merge action mapping must not be null"));
     }
 
     /**
@@ -98,7 +98,7 @@ public class MergeResult<T> {
      * @return The returned result of the duplicate merge action, may be {@code null}.
      */
     public T getResult() {
-        return this.result;
+        return result;
     }
 
     /**
@@ -106,14 +106,14 @@ public class MergeResult<T> {
      *         {@code null}.
      */
     public List<T> getMappingsToMap() {
-        return this.mappingsToMap;
+        return mappingsToMap;
     }
 
     @Override
     public String toString() {
         return "MergeResult{" +
-            "result=" + this.result +
-            ", mappingsToMap=" + this.mappingsToMap +
+            "result=" + result +
+            ", mappingsToMap=" + mappingsToMap +
             '}';
     }
 }

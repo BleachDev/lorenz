@@ -61,18 +61,18 @@ public class JamWriter extends TextMappingsWriter {
         // Write class mappings
         mappings.getTopLevelClassMappings().stream()
                 .filter(ClassMapping::hasMappings)
-                .sorted(this.getConfig().getClassMappingComparator())
+                .sorted(getConfig().getClassMappingComparator())
                 .forEach(this::writeClassMapping);
 
         // Write everything to the print writer
-        this.classes.forEach(this.writer::println);
-        this.fields.forEach(this.writer::println);
-        this.methods.forEach(this.writer::println);
+        classes.forEach(writer::println);
+        fields.forEach(writer::println);
+        methods.forEach(writer::println);
 
         // Clear out the lists, to ensure that mappings aren't written twice (or more)
-        this.classes.clear();
-        this.fields.clear();
-        this.methods.clear();
+        classes.clear();
+        fields.clear();
+        methods.clear();
     }
 
     /**
@@ -83,25 +83,25 @@ public class JamWriter extends TextMappingsWriter {
     protected void writeClassMapping(final ClassMapping<?, ?> mapping) {
         // Check if the mapping should be written, and if so write it
         if (mapping.hasDeobfuscatedName()) {
-            this.classes.add(String.format("CL %s %s", mapping.getFullObfuscatedName(), mapping.getFullDeobfuscatedName()));
+            classes.add(String.format("CL %s %s", mapping.getFullObfuscatedName(), mapping.getFullDeobfuscatedName()));
         }
 
         // Write inner class mappings
         mapping.getInnerClassMappings().stream()
                 .filter(ClassMapping::hasMappings)
-                .sorted(this.getConfig().getClassMappingComparator())
+                .sorted(getConfig().getClassMappingComparator())
                 .forEach(this::writeClassMapping);
 
         // Write field mappings
         mapping.getFieldMappings().stream()
                 .filter(Mapping::hasDeobfuscatedName)
-                .sorted(this.getConfig().getFieldMappingComparator())
+                .sorted(getConfig().getFieldMappingComparator())
                 .forEach(this::writeFieldMapping);
 
         // Write method mappings
         mapping.getMethodMappings().stream()
                 .filter(MethodMapping::hasMappings)
-                .sorted(this.getConfig().getMethodMappingComparator())
+                .sorted(getConfig().getMethodMappingComparator())
                 .forEach(this::writeMethodMapping);
     }
 
@@ -114,7 +114,7 @@ public class JamWriter extends TextMappingsWriter {
         // The SHOULD_WRITE test should have already have been performed, so we're good
         final Optional<FieldType> fieldType = mapping.getType();
         fieldType.ifPresent(type -> {
-            this.fields.add(String.format("FD %s %s %s %s",
+            fields.add(String.format("FD %s %s %s %s",
                     mapping.getParent().getFullObfuscatedName(),
                     mapping.getObfuscatedName(),
                     mapping.getMappings().deobfuscate(type),
@@ -132,7 +132,7 @@ public class JamWriter extends TextMappingsWriter {
     protected void writeMethodMapping(final MethodMapping mapping) {
         // The SHOULD_WRITE test should have already have been performed, so we're good
         if (mapping.hasDeobfuscatedName()) {
-            this.methods.add(String.format("MD %s %s %s %s",
+            methods.add(String.format("MD %s %s %s %s",
                     mapping.getParent().getFullObfuscatedName(),
                     mapping.getObfuscatedName(),
                     mapping.getObfuscatedDescriptor(),
@@ -140,7 +140,7 @@ public class JamWriter extends TextMappingsWriter {
             ));
         }
         for (final MethodParameterMapping parameterMapping : mapping.getParameterMappings()) {
-            this.methods.add(String.format("MP %s %s %s %s %s",
+            methods.add(String.format("MP %s %s %s %s %s",
                     parameterMapping.getParent().getParent().getFullObfuscatedName(),
                     parameterMapping.getParent().getObfuscatedName(),
                     parameterMapping.getParent().getObfuscatedDescriptor(),

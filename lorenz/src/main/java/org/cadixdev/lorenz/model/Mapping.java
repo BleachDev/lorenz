@@ -29,10 +29,7 @@ import org.cadixdev.lorenz.MappingSet;
 import org.cadixdev.lorenz.util.MappingChangedListener;
 import org.cadixdev.lorenz.util.Reversible;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Supplier;
 
 /**
  * Represents a de-obfuscation mapping for mappable constructs of the Java
@@ -99,7 +96,7 @@ public interface Mapping<M extends Mapping<M, P>, P> extends Reversible<M, P> {
      * @since 0.4.0
      */
     default String getSimpleObfuscatedName() {
-        return this.getObfuscatedName();
+        return getObfuscatedName();
     }
 
     /**
@@ -109,7 +106,7 @@ public interface Mapping<M extends Mapping<M, P>, P> extends Reversible<M, P> {
      * @since 0.4.0
      */
     default String getSimpleDeobfuscatedName() {
-        return this.getDeobfuscatedName();
+        return getDeobfuscatedName();
     }
 
     /**
@@ -134,7 +131,7 @@ public interface Mapping<M extends Mapping<M, P>, P> extends Reversible<M, P> {
     boolean hasDeobfuscatedName();
 
     /**
-     * Gets the Javadoc of the member, this will never be <code>null</code>.
+     * Gets the Javadoc of the member, this will never be {@code null}.
      *
      * @return The Javadoc of the member
      */

@@ -27,7 +27,6 @@ package org.cadixdev.lorenz.io.searge.xsrg;
 
 import org.cadixdev.lorenz.io.MappingsReader;
 import org.cadixdev.lorenz.io.MappingsWriter;
-import org.cadixdev.lorenz.io.TextMappingFormat;
 import org.cadixdev.lorenz.io.searge.SrgMappingFormat;
 
 import java.io.Reader;

@@ -83,7 +83,7 @@ public interface MappingFormat {
      * @throws UnsupportedOperationException If the format does not support reading
      */
     default MappingsReader createReader(final Path path) throws IOException {
-        return this.createReader(Files.newInputStream(path));
+        return createReader(Files.newInputStream(path));
     }
 
     /**
@@ -95,7 +95,7 @@ public interface MappingFormat {
      * @throws IOException Should an I/O issue occur
      */
     default MappingSet read(final MappingSet mappings, final Path path) throws IOException {
-        try (final MappingsReader reader = this.createReader(path)) {
+        try (final MappingsReader reader = createReader(path)) {
             reader.read(mappings);
         }
         return mappings;
@@ -109,7 +109,7 @@ public interface MappingFormat {
      * @throws IOException Should an I/O issue occur
      */
     default MappingSet read(final Path path) throws IOException {
-        return this.read(new MappingSet(), path);
+        return read(new MappingSet(), path);
     }
 
     /**
@@ -133,7 +133,7 @@ public interface MappingFormat {
      * @throws UnsupportedOperationException If the format does not support writing
      */
     default MappingsWriter createWriter(final Path path) throws IOException {
-        return this.createWriter(Files.newOutputStream(path));
+        return createWriter(Files.newOutputStream(path));
     }
 
     /**
@@ -144,7 +144,7 @@ public interface MappingFormat {
      * @throws IOException Should an I/O issue occur
      */
     default void write(final MappingSet mappings, final Path path) throws IOException {
-        try (final MappingsWriter writer = this.createWriter(path)) {
+        try (final MappingsWriter writer = createWriter(path)) {
             writer.write(mappings);
         }
     }
@@ -160,7 +160,7 @@ public interface MappingFormat {
      * @since 0.5.5
      */
     default void write(final MappingSet mappings, final Path path, final MappingsWriterConfig config) throws IOException {
-        try (final MappingsWriter writer = this.createWriter(path)) {
+        try (final MappingsWriter writer = createWriter(path)) {
             writer.setConfig(config);
             writer.write(mappings);
         }
@@ -183,7 +183,7 @@ public interface MappingFormat {
      * @since 0.6.0
      */
     default Collection<String> getFileExtensions() {
-        final String standardExtension = this.getStandardFileExtension().orElse(null);
+        final String standardExtension = getStandardFileExtension().orElse(null);
         return standardExtension == null ?
                 Collections.emptySet() :
                 Collections.singleton(standardExtension);

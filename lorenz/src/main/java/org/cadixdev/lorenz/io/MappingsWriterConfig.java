@@ -58,9 +58,9 @@ public class MappingsWriterConfig {
     private final Comparator<MethodMapping> methodMappingComparator;
 
     MappingsWriterConfig(final Builder builder) {
-        this.classMappingComparator = builder.classMappingComparator;
-        this.fieldMappingComparator = builder.fieldMappingComparator;
-        this.methodMappingComparator = builder.methodMappingComparator;
+        classMappingComparator = builder.classMappingComparator;
+        fieldMappingComparator = builder.fieldMappingComparator;
+        methodMappingComparator = builder.methodMappingComparator;
     }
 
     /**
@@ -70,7 +70,7 @@ public class MappingsWriterConfig {
      * @return The class mappings comparator
      */
     public Comparator<ClassMapping<?, ?>> getClassMappingComparator() {
-        return this.classMappingComparator;
+        return classMappingComparator;
     }
 
     /**
@@ -80,7 +80,7 @@ public class MappingsWriterConfig {
      * @return The field mappings comparator
      */
     public Comparator<FieldMapping> getFieldMappingComparator() {
-        return this.fieldMappingComparator;
+        return fieldMappingComparator;
     }
 
     /**
@@ -90,7 +90,7 @@ public class MappingsWriterConfig {
      * @return The method mappings comparator
      */
     public Comparator<MethodMapping> getMethodMappingComparator() {
-        return this.methodMappingComparator;
+        return methodMappingComparator;
     }
 
     /**

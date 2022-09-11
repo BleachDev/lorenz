@@ -25,16 +25,10 @@
 
 package org.cadixdev.lorenz.io;
 
-import org.cadixdev.bombe.type.FieldType;
 import org.cadixdev.lorenz.MappingSet;
-import org.cadixdev.lorenz.model.FieldMapping;
-import org.cadixdev.lorenz.model.Mapping;
-import org.cadixdev.lorenz.model.MethodMapping;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.Comparator;
-import java.util.function.Function;
 
 /**
  * Represents a writer, that is capable of writing de-obfuscation
@@ -61,7 +55,7 @@ public abstract class MappingsWriter implements Closeable {
      * @since 0.5.5
      */
     public MappingsWriterConfig getConfig() {
-        return this.config;
+        return config;
     }
 
     /**

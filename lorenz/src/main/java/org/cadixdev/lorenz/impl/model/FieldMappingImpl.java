@@ -57,7 +57,7 @@ public class FieldMappingImpl
 
     @Override
     public FieldSignature getSignature() {
-        return this.signature;
+        return signature;
     }
 
     @Override
@@ -65,7 +65,7 @@ public class FieldMappingImpl
         if (this == obj) return true;
         if (!super.equals(obj) || !(obj instanceof FieldMapping)) return false;
         final FieldMapping that = (FieldMapping) obj;
-        return Objects.equals(this.signature, that.getSignature());
+        return Objects.equals(signature, that.getSignature());
     }
 
 }

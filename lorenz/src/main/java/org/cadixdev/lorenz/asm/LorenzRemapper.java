@@ -56,27 +56,27 @@ public class LorenzRemapper extends Remapper {
 
     @Override
     public String map(final String typeName) {
-        return this.mappings.computeClassMapping(typeName)
+        return mappings.computeClassMapping(typeName)
                 .map(Mapping::getFullDeobfuscatedName)
                 .orElse(typeName);
     }
 
     @Override
     public String mapInnerClassName(final String name, final String ownerName, final String innerName) {
-        return this.mappings.computeClassMapping(name)
+        return mappings.computeClassMapping(name)
                 .map(Mapping::getDeobfuscatedName)
                 .orElse(innerName);
     }
 
     private ClassMapping<?, ?> getCompletedClassMapping(final String owner) {
-        final ClassMapping<?, ?> mapping = this.mappings.getOrCreateClassMapping(owner);
-        mapping.complete(this.inheritanceProvider);
+        final ClassMapping<?, ?> mapping = mappings.getOrCreateClassMapping(owner);
+        mapping.complete(inheritanceProvider);
         return mapping;
     }
 
     @Override
     public String mapFieldName(final String owner, final String name, final String desc) {
-        return this.getCompletedClassMapping(owner)
+        return getCompletedClassMapping(owner)
                 .computeFieldMapping(FieldSignature.of(name, desc))
                 .map(Mapping::getDeobfuscatedName)
                 .orElse(name);
@@ -84,7 +84,7 @@ public class LorenzRemapper extends Remapper {
 
     @Override
     public String mapMethodName(final String owner, final String name, final String desc) {
-        return this.getCompletedClassMapping(owner)
+        return getCompletedClassMapping(owner)
                 .getMethodMapping(MethodSignature.of(name, desc))
                 .map(Mapping::getDeobfuscatedName)
                 .orElse(name);

@@ -173,7 +173,7 @@ public interface ClassMapping<M extends ClassMapping<M, P>, P> extends Mapping<M
      * @return The field mapping
      */
     default FieldMapping createFieldMapping(final String obfuscatedName, final String deobfuscatedName) {
-        return this.createFieldMapping(new FieldSignature(obfuscatedName), deobfuscatedName);
+        return createFieldMapping(new FieldSignature(obfuscatedName), deobfuscatedName);
     }
 
     /**
@@ -185,7 +185,7 @@ public interface ClassMapping<M extends ClassMapping<M, P>, P> extends Mapping<M
      * @since 0.4.0
      */
     default FieldMapping createFieldMapping(final FieldSignature signature) {
-        return this.createFieldMapping(signature, signature.getName());
+        return createFieldMapping(signature, signature.getName());
     }
 
     /**
@@ -196,7 +196,7 @@ public interface ClassMapping<M extends ClassMapping<M, P>, P> extends Mapping<M
      * @return The field mapping
      */
     default FieldMapping createFieldMapping(final String obfuscatedName) {
-        return this.createFieldMapping(obfuscatedName, obfuscatedName);
+        return createFieldMapping(obfuscatedName, obfuscatedName);
     }
 
     /**
@@ -208,8 +208,8 @@ public interface ClassMapping<M extends ClassMapping<M, P>, P> extends Mapping<M
      * @since 0.4.0
      */
     default FieldMapping getOrCreateFieldMapping(final FieldSignature signature) {
-        return this.getFieldMapping(signature)
-                .orElseGet(() -> this.createFieldMapping(signature));
+        return getFieldMapping(signature)
+                .orElseGet(() -> createFieldMapping(signature));
     }
 
     /**
@@ -220,8 +220,8 @@ public interface ClassMapping<M extends ClassMapping<M, P>, P> extends Mapping<M
      * @return The field mapping
      */
     default FieldMapping getOrCreateFieldMapping(final String obfuscatedName) {
-        return this.getFieldMapping(obfuscatedName)
-                .orElseGet(() -> this.createFieldMapping(obfuscatedName));
+        return getFieldMapping(obfuscatedName)
+                .orElseGet(() -> createFieldMapping(obfuscatedName));
     }
 
     /**
@@ -234,7 +234,7 @@ public interface ClassMapping<M extends ClassMapping<M, P>, P> extends Mapping<M
      * @since 0.4.0
      */
     default FieldMapping getOrCreateFieldMapping(final String obfuscatedName, final String obfuscatedDescriptor) {
-        return this.getOrCreateFieldMapping(new FieldSignature(obfuscatedName, FieldType.of(obfuscatedDescriptor)));
+        return getOrCreateFieldMapping(new FieldSignature(obfuscatedName, FieldType.of(obfuscatedDescriptor)));
     }
 
     /**
@@ -247,7 +247,7 @@ public interface ClassMapping<M extends ClassMapping<M, P>, P> extends Mapping<M
      * @since 0.5.1
      */
     default FieldMapping getOrCreateFieldMapping(final String obfuscatedName, final FieldType obfuscatedDescriptor) {
-        return this.getOrCreateFieldMapping(new FieldSignature(obfuscatedName, obfuscatedDescriptor));
+        return getOrCreateFieldMapping(new FieldSignature(obfuscatedName, obfuscatedDescriptor));
     }
 
     /**
@@ -272,7 +272,7 @@ public interface ClassMapping<M extends ClassMapping<M, P>, P> extends Mapping<M
      *         {@code false} otherwise
      */
     default boolean hasFieldMapping(final String obfuscatedName) {
-        return this.hasFieldMapping(new FieldSignature(obfuscatedName));
+        return hasFieldMapping(new FieldSignature(obfuscatedName));
     }
 
     /**
@@ -325,7 +325,7 @@ public interface ClassMapping<M extends ClassMapping<M, P>, P> extends Mapping<M
      * @since 0.5.0
      */
     default Optional<MethodMapping> getMethodMapping(final String obfuscatedName, final String obfuscatedDescriptor) {
-        return this.getMethodMapping(MethodSignature.of(obfuscatedName, obfuscatedDescriptor));
+        return getMethodMapping(MethodSignature.of(obfuscatedName, obfuscatedDescriptor));
     }
 
     /**
@@ -346,7 +346,7 @@ public interface ClassMapping<M extends ClassMapping<M, P>, P> extends Mapping<M
      * @return The method mapping
      */
     default MethodMapping createMethodMapping(final MethodSignature signature) {
-        return this.createMethodMapping(signature, signature.getName());
+        return createMethodMapping(signature, signature.getName());
     }
 
     /**
@@ -358,7 +358,7 @@ public interface ClassMapping<M extends ClassMapping<M, P>, P> extends Mapping<M
      * @return The method mapping
      */
     default MethodMapping createMethodMapping(final String obfuscatedName, final String obfuscatedDescriptor) {
-        return this.createMethodMapping(MethodSignature.of(obfuscatedName, obfuscatedDescriptor));
+        return createMethodMapping(MethodSignature.of(obfuscatedName, obfuscatedDescriptor));
     }
 
     /**
@@ -371,7 +371,7 @@ public interface ClassMapping<M extends ClassMapping<M, P>, P> extends Mapping<M
      * @since 0.5.1
      */
     default MethodMapping createMethodMapping(final String obfuscatedName, final MethodDescriptor obfuscatedDescriptor) {
-        return this.createMethodMapping(new MethodSignature(obfuscatedName, obfuscatedDescriptor));
+        return createMethodMapping(new MethodSignature(obfuscatedName, obfuscatedDescriptor));
     }
 
     /**
@@ -382,8 +382,8 @@ public interface ClassMapping<M extends ClassMapping<M, P>, P> extends Mapping<M
      * @return The method mapping
      */
     default MethodMapping getOrCreateMethodMapping(final MethodSignature signature) {
-        return this.getMethodMapping(signature)
-                .orElseGet(() -> this.createMethodMapping(signature));
+        return getMethodMapping(signature)
+                .orElseGet(() -> createMethodMapping(signature));
     }
 
     /**
@@ -395,7 +395,7 @@ public interface ClassMapping<M extends ClassMapping<M, P>, P> extends Mapping<M
      * @return The method mapping
      */
     default MethodMapping getOrCreateMethodMapping(final String obfuscatedName, final String obfuscatedDescriptor) {
-        return this.getOrCreateMethodMapping(MethodSignature.of(obfuscatedName, obfuscatedDescriptor));
+        return getOrCreateMethodMapping(MethodSignature.of(obfuscatedName, obfuscatedDescriptor));
     }
 
     /**
@@ -408,7 +408,7 @@ public interface ClassMapping<M extends ClassMapping<M, P>, P> extends Mapping<M
      * @since 0.5.1
      */
     default MethodMapping getOrCreateMethodMapping(final String obfuscatedName, final MethodDescriptor obfuscatedDescriptor) {
-        return this.getOrCreateMethodMapping(new MethodSignature(obfuscatedName, obfuscatedDescriptor));
+        return getOrCreateMethodMapping(new MethodSignature(obfuscatedName, obfuscatedDescriptor));
     }
 
     /**
@@ -472,7 +472,7 @@ public interface ClassMapping<M extends ClassMapping<M, P>, P> extends Mapping<M
      * @return The class mapping
      */
     default InnerClassMapping createInnerClassMapping(final String obfuscatedName) {
-        return this.createInnerClassMapping(obfuscatedName, obfuscatedName);
+        return createInnerClassMapping(obfuscatedName, obfuscatedName);
     }
 
     /**
@@ -483,8 +483,8 @@ public interface ClassMapping<M extends ClassMapping<M, P>, P> extends Mapping<M
      * @return The inner class mapping
      */
     default InnerClassMapping getOrCreateInnerClassMapping(final String obfuscatedName) {
-        return this.getInnerClassMapping(obfuscatedName)
-                .orElseGet(() -> this.createInnerClassMapping(obfuscatedName));
+        return getInnerClassMapping(obfuscatedName)
+                .orElseGet(() -> createInnerClassMapping(obfuscatedName));
     }
 
     /**
@@ -522,15 +522,15 @@ public interface ClassMapping<M extends ClassMapping<M, P>, P> extends Mapping<M
      *         {@code false} otherwise
      */
     default boolean hasMappings() {
-        return this.hasDeobfuscatedName() ||
-                this.getFieldMappings().stream().anyMatch(Mapping::hasDeobfuscatedName) ||
-                this.getMethodMappings().stream().anyMatch(MethodMapping::hasMappings) ||
-                this.getInnerClassMappings().stream().anyMatch(ClassMapping::hasMappings);
+        return hasDeobfuscatedName() ||
+                getFieldMappings().stream().anyMatch(Mapping::hasDeobfuscatedName) ||
+                getMethodMappings().stream().anyMatch(MethodMapping::hasMappings) ||
+                getInnerClassMappings().stream().anyMatch(ClassMapping::hasMappings);
     }
 
     @Override
     default Optional<InheritanceProvider.ClassInfo> provideInheritance(final InheritanceProvider provider, final Object context) {
-        return provider.provide(this.getFullObfuscatedName(), context);
+        return provider.provide(getFullObfuscatedName(), context);
     }
 
 }

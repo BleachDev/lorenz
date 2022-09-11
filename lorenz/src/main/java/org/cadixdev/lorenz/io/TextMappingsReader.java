@@ -30,8 +30,6 @@ import org.cadixdev.lorenz.MappingSet;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.regex.Pattern;
 
 /**
@@ -59,7 +57,7 @@ public abstract class TextMappingsReader extends MappingsReader {
 
     @Override
     public MappingSet read(final MappingSet mappings) {
-        this.reader.lines().forEach(line -> readLine(mappings, line));
+        reader.lines().forEach(line -> readLine(mappings, line));
         return mappings;
     }
 
@@ -67,6 +65,6 @@ public abstract class TextMappingsReader extends MappingsReader {
 
     @Override
     public void close() throws IOException {
-        this.reader.close();
+        reader.close();
     }
 }

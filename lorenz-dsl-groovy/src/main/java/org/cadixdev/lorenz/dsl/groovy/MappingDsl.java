@@ -53,7 +53,7 @@ public class MappingDsl<T extends Mapping<T, P>, P> {
      * @see Mapping#setDeobfuscatedName(String)
      */
     public void setDeobf(final String name) {
-        this.mapping.setDeobfuscatedName(name);
+        mapping.setDeobfuscatedName(name);
     }
 
     /**
@@ -63,7 +63,7 @@ public class MappingDsl<T extends Mapping<T, P>, P> {
      * @see Mapping#addListener(MappingChangedListener)
      */
     public void listener(final MappingChangedListener<T, P> listener) {
-        this.mapping.addListener(listener);
+        mapping.addListener(listener);
     }
 
 }

@@ -65,37 +65,37 @@ public class MethodMappingImpl
 
     @Override
     public MethodSignature getSignature() {
-        return this.signature;
+        return signature;
     }
 
     @Override
     public Collection<MethodParameterMapping> getParameterMappings() {
-        return Collections.unmodifiableCollection(this.parameters.values());
+        return Collections.unmodifiableCollection(parameters.values());
     }
 
     @Override
     public MethodParameterMapping createParameterMapping(final int index, final String deobfuscatedName) {
-        return this.parameters.compute(index, (i, mapping) -> {
+        return parameters.compute(index, (i, mapping) -> {
             if (mapping != null) return mapping.setDeobfuscatedName(deobfuscatedName);
-            return this.getMappings().getModelFactory().createMethodParameterMapping(this, i, deobfuscatedName);
+            return getMappings().getModelFactory().createMethodParameterMapping(this, i, deobfuscatedName);
         });
     }
 
     @Override
     public Optional<MethodParameterMapping> getParameterMapping(final int index) {
-        return Optional.ofNullable(this.parameters.get(index));
+        return Optional.ofNullable(parameters.get(index));
     }
 
     @Override
     public boolean hasParameterMapping(final int index) {
-        return this.parameters.containsKey(index);
+        return parameters.containsKey(index);
     }
 
     @Override
     protected StringJoiner buildToString() {
         return super.buildToString()
-                .add("obfuscatedSignature=" + this.getObfuscatedDescriptor())
-                .add("deobfuscatedSignature=" + this.getDeobfuscatedDescriptor());
+                .add("obfuscatedSignature=" + getObfuscatedDescriptor())
+                .add("deobfuscatedSignature=" + getDeobfuscatedDescriptor());
     }
 
     @Override
@@ -103,12 +103,12 @@ public class MethodMappingImpl
         if (this == obj) return true;
         if (!super.equals(obj) || !(obj instanceof MethodMapping)) return false;
         final MethodMapping that = (MethodMapping) obj;
-        return Objects.equals(this.signature, that.getSignature());
+        return Objects.equals(signature, that.getSignature());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), this.signature);
+        return Objects.hash(super.hashCode(), signature);
     }
 
 }

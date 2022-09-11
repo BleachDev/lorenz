@@ -52,7 +52,7 @@ public abstract class BinaryMappingsWriter extends MappingsWriter {
 
     @Override
     public void close() throws IOException {
-        this.stream.close();
+        stream.close();
     }
 
 }

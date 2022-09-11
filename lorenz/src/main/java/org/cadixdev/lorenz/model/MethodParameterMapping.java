@@ -45,22 +45,22 @@ public interface MethodParameterMapping extends MemberMapping<MethodParameterMap
 
     @Override
     default String getObfuscatedName() {
-        return String.valueOf(this.getIndex());
+        return String.valueOf(getIndex());
     }
 
     @Override
     default MethodParameterMapping reverse(final MethodMapping parent) {
-        return parent.createParameterMapping(this.getIndex(), this.getDeobfuscatedName());
+        return parent.createParameterMapping(getIndex(), getDeobfuscatedName());
     }
 
     @Override
     default MethodParameterMapping merge(final MethodParameterMapping with, final MethodMapping parent) {
-        return MappingSetMerger.create(this.getMappings(), with.getMappings()).mergeMethodParameter(this, with, parent);
+        return MappingSetMerger.create(getMappings(), with.getMappings()).mergeMethodParameter(this, with, parent);
     }
 
     @Override
     default MethodParameterMapping copy(final MethodMapping parent) {
-        return parent.createParameterMapping(this.getIndex(), this.getDeobfuscatedName());
+        return parent.createParameterMapping(getIndex(), getDeobfuscatedName());
     }
 
 }

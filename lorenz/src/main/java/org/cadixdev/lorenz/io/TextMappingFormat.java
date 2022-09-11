@@ -57,12 +57,12 @@ public interface TextMappingFormat extends MappingFormat {
 
     @Override
     default MappingsReader createReader(final InputStream stream) throws IOException {
-        return this.createReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
+        return createReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
     }
 
     @Override
     default MappingsReader createReader(final Path path) throws IOException {
-        return this.createReader(Files.newBufferedReader(path));
+        return createReader(Files.newBufferedReader(path));
     }
 
     /**
@@ -78,12 +78,12 @@ public interface TextMappingFormat extends MappingFormat {
 
     @Override
     default MappingsWriter createWriter(final OutputStream stream) throws IOException {
-        return this.createWriter(new OutputStreamWriter(stream, StandardCharsets.UTF_8));
+        return createWriter(new OutputStreamWriter(stream, StandardCharsets.UTF_8));
     }
 
     @Override
     default MappingsWriter createWriter(final Path path) throws IOException {
-        return this.createWriter(Files.newBufferedWriter(path));
+        return createWriter(Files.newBufferedWriter(path));
     }
 
     /**
