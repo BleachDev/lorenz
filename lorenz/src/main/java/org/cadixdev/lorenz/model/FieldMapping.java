@@ -70,10 +70,7 @@ public interface FieldMapping extends MemberMapping<FieldMapping, ClassMapping> 
      * @since 0.4.0
      */
     default Optional<FieldType> getType() {
-        // First check the signature
-        if (this.getSignature().getType().isPresent()) return this.getSignature().getType();
-        // Check the FieldTypeProvider
-        return this.getMappings().getFieldTypeProvider().provide(this);
+        return this.getSignature().getType();
     }
 
     @Override

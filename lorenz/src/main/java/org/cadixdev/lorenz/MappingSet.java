@@ -35,8 +35,6 @@ import org.cadixdev.lorenz.merge.MappingSetMerger;
 import org.cadixdev.lorenz.model.ClassMapping;
 import org.cadixdev.lorenz.model.InnerClassMapping;
 import org.cadixdev.lorenz.model.TopLevelClassMapping;
-import org.cadixdev.lorenz.model.jar.CompositeFieldTypeProvider;
-import org.cadixdev.lorenz.model.jar.FieldTypeProvider;
 import org.cadixdev.lorenz.util.Reversible;
 
 import java.util.Collection;
@@ -58,7 +56,6 @@ public class MappingSet implements Reversible<MappingSet, MappingSet>, Iterable<
 
     private final MappingSetModelFactory modelFactory;
     private final Map<String, TopLevelClassMapping> topLevelClasses = new ConcurrentHashMap<>();
-    private final CompositeFieldTypeProvider fieldTypeProvider = new CompositeFieldTypeProvider();
 
     /**
      * Creates a mapping set using the default {@link MappingSetModelFactory}.
@@ -237,42 +234,6 @@ public class MappingSet implements Reversible<MappingSet, MappingSet>, Iterable<
 
         // Get the inner class
         return parentClass.getOrCreateInnerClassMapping(innerClassName);
-    }
-
-    /**
-     * Gets the field type provider in use for this set of mappings.
-     *
-     * @return The field type provider
-     * @since 0.4.0
-     */
-    public CompositeFieldTypeProvider getFieldTypeProvider() {
-        return this.fieldTypeProvider;
-    }
-
-    /**
-     * Adds the given {@link FieldTypeProvider} to this set of mappings.
-     *
-     * @param fieldTypeProvider The field type provider
-     * @return {@code this}, for chaining
-     * @see CompositeFieldTypeProvider#add(FieldTypeProvider)
-     * @since 0.4.0
-     */
-    public MappingSet addFieldTypeProvider(final FieldTypeProvider fieldTypeProvider) {
-        this.getFieldTypeProvider().add(fieldTypeProvider);
-        return this;
-    }
-
-    /**
-     * Removes the given {@link FieldTypeProvider} to this set of mappings.
-     *
-     * @param fieldTypeProvider The field type provider
-     * @return {@code this}, for chaining
-     * @see CompositeFieldTypeProvider#remove(FieldTypeProvider)
-     * @since 0.4.0
-     */
-    public MappingSet removeFieldTypeProvider(final FieldTypeProvider fieldTypeProvider) {
-        this.getFieldTypeProvider().remove(fieldTypeProvider);
-        return this;
     }
 
     /**
