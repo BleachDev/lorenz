@@ -23,49 +23,53 @@
  * THE SOFTWARE.
  */
 
-package org.cadixdev.lorenz.io;
+package org.cadixdev.lorenz.io.tiny;
 
-import org.cadixdev.lorenz.MappingSet;
+import org.cadixdev.lorenz.io.MappingsReader;
+import org.cadixdev.lorenz.io.MappingsWriter;
+import org.cadixdev.lorenz.io.TextMappingFormat;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.Reader;
-import java.util.regex.Pattern;
+import java.io.Writer;
+import java.util.Optional;
 
 /**
- * An implementation of {@link MappingsReader} designed to aid
- * with the implementation of mapping readers for text-based
- * mapping formats.
+ * The Tiny V2 mapping format.
  *
- * @author Jamie Mansfield
- * @since 0.4.0
+ * @author Bleach
+ * @since 1.0.0
  */
-public abstract class TextMappingsReader extends MappingsReader {
+public class TinyV2MappingFormat implements TextMappingFormat {
 
-    protected static final Pattern SPACE = Pattern.compile(" ", Pattern.LITERAL);
-    protected static final Pattern TAB = Pattern.compile("\t", Pattern.LITERAL);
-
-    protected final BufferedReader reader;
+    public static final TinyV2MappingFormat INSTANCE = new TinyV2MappingFormat();
 
     /**
-     * Creates a new mappings reader, for the given {@link Reader}.
-     *
-     * @param reader The reader
+     * The Tiny V2 file extension (note that it's the same in Tiny V1 mappings).
      */
-    protected TextMappingsReader(final Reader reader) {
-        this.reader = reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader);
+    public static final String MAPPING_EXTENSION = "tiny";
+
+    @Override
+    public String getIdentifier() {
+        return "tinyv2";
     }
 
     @Override
-    public MappingSet read(final MappingSet mappings) throws IOException {
-        reader.lines().forEach(line -> readLine(mappings, line));
-        return mappings;
+    public String getName() {
+        return "Tiny V2";
     }
 
-    protected abstract void readLine(final MappingSet mappings, final String line);
+    @Override
+    public MappingsReader createReader(final Reader reader) {
+        return new TinyV2Reader(reader);
+    }
 
     @Override
-    public void close() throws IOException {
-        reader.close();
+    public MappingsWriter createWriter(final Writer writer) {
+        return new TinyV2Writer(writer);
+    }
+
+    @Override
+    public Optional<String> getStandardFileExtension() {
+        return Optional.of(MAPPING_EXTENSION);
     }
 }

@@ -132,16 +132,18 @@ public class EnigmaWriter extends TextMappingsWriter {
     }
 
     protected void printMapping(final Mapping<?, ?> mapping, final int indent, final String line) {
-        for (int i = 0; i < indent; i++) {
-            writer.print('\t');
-        }
+        printIndent(indent);
         writer.println(line);
 
         for (String comment : mapping.getJavadoc()) {
-            for (int i = 0; i < indent + 1; i++) {
-                writer.print('\t');
-            }
+            printIndent(indent + 1);
             writer.println(comment.isEmpty() ? "COMMENT" : String.format("COMMENT %s", comment));
+        }
+    }
+
+    private void printIndent(int indent) {
+        for (int i = 0; i < indent; i++) {
+            writer.print('\t');
         }
     }
 

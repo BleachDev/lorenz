@@ -23,7 +23,7 @@
  * THE SOFTWARE.
  */
 
-package org.cadixdev.lorenz.io.searge.csrg;
+package org.cadixdev.lorenz.io.tiny;
 
 import org.cadixdev.lorenz.MappingSet;
 import org.cadixdev.lorenz.io.MappingsWriter;
@@ -32,49 +32,45 @@ import org.cadixdev.lorenz.model.ClassMapping;
 import org.cadixdev.lorenz.model.FieldMapping;
 import org.cadixdev.lorenz.model.Mapping;
 import org.cadixdev.lorenz.model.MethodMapping;
+import org.cadixdev.lorenz.model.MethodParameterMapping;
 
+import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * An implementation of {@link MappingsWriter} for the CSRG format.
+ * An implementation of {@link MappingsWriter} for the Tiny V2 format.
  *
- * @author Jamie Mansfield
- * @since 0.4.0
+ * @author Bleach
+ * @since 1.0.0
  */
-public class CSrgWriter extends TextMappingsWriter {
+public class TinyV2Writer extends TextMappingsWriter {
 
-    private final List<String> classes = new ArrayList<>();
-    private final List<String> fields = new ArrayList<>();
-    private final List<String> methods = new ArrayList<>();
+    private String from;
+    private String to;
 
-    /**
-     * Creates a new CSRG mappings writer, from the given {@link Writer}.
-     *
-     * @param writer The writer
-     */
-    public CSrgWriter(final Writer writer) {
+    public TinyV2Writer(final Writer writer) {
         super(writer);
     }
 
+    public TinyV2Writer withFormats(String from, String to) {
+        this.from = from;
+        this.to = to;
+        return this;
+    }
+
     @Override
-    public void write(final MappingSet mappings) {
-        // Write class mappings
+    public void write(final MappingSet mappings) throws IOException {
+        if (from == null || to == null) {
+            throw new IllegalStateException("Format names not set. call withFormats() before writing!");
+        }
+
+        // Write header
+        writer.println("tiny\t2\t0\t" + from + "\t" + to);
+
         mappings.getTopLevelClassMappings().stream()
                 .filter(ClassMapping::hasMappings)
                 .sorted(getConfig().getClassMappingComparator())
                 .forEach(this::writeClassMapping);
-
-        // Write everything to the print writer
-        classes.forEach(writer::println);
-        fields.forEach(writer::println);
-        methods.forEach(writer::println);
-
-        // Clear out the lists, to ensure that mappings aren't written twice (or more)
-        classes.clear();
-        fields.clear();
-        methods.clear();
     }
 
     /**
@@ -85,14 +81,10 @@ public class CSrgWriter extends TextMappingsWriter {
     protected void writeClassMapping(final ClassMapping<?, ?> mapping) {
         // Check if the mapping should be written, and if so write it
         if (mapping.hasDeobfuscatedName()) {
-            classes.add(String.format("%s %s", mapping.getFullObfuscatedName(), mapping.getFullDeobfuscatedName()));
+            printMapping(mapping, 0, "c\t"
+                    + mapping.getFullObfuscatedName() + "\t"
+                    + mapping.getFullDeobfuscatedName());
         }
-
-        // Write inner class mappings
-        mapping.getInnerClassMappings().stream()
-                .filter(ClassMapping::hasMappings)
-                .sorted(getConfig().getClassMappingComparator())
-                .forEach(this::writeClassMapping);
 
         // Write field mappings
         mapping.getFieldsByName().values().stream()
@@ -105,6 +97,12 @@ public class CSrgWriter extends TextMappingsWriter {
                 .filter(Mapping::hasDeobfuscatedName)
                 .sorted(getConfig().getMethodMappingComparator())
                 .forEach(this::writeMethodMapping);
+
+        // Write inner class mappings
+        mapping.getInnerClassMappings().stream()
+                .filter(ClassMapping::hasMappings)
+                .sorted(getConfig().getClassMappingComparator())
+                .forEach(this::writeClassMapping);
     }
 
     /**
@@ -113,12 +111,11 @@ public class CSrgWriter extends TextMappingsWriter {
      * @param mapping The field mapping
      */
     protected void writeFieldMapping(final FieldMapping mapping) {
-        // The hasDeobfuscatedName test should have already have been performed, so we're good
-        fields.add(String.format("%s %s %s",
-                mapping.getParent().getFullObfuscatedName(),
-                mapping.getObfuscatedName(),
-                mapping.getDeobfuscatedName()
-        ));
+        printMapping(mapping, 1, "f\t"
+                + mapping.getParent().getFullObfuscatedName() + "\t"
+                + mapping.getType().map(Object::toString).orElse("") + "\t"
+                + mapping.getObfuscatedName() + "\t"
+                + mapping.getDeobfuscatedName());
     }
 
     /**
@@ -127,12 +124,32 @@ public class CSrgWriter extends TextMappingsWriter {
      * @param mapping The method mapping
      */
     protected void writeMethodMapping(final MethodMapping mapping) {
-        // The hasDeobfuscatedName test should have already have been performed, so we're good
-        methods.add(String.format("%s %s %s %s",
-                mapping.getParent().getFullObfuscatedName(),
-                mapping.getObfuscatedName(), mapping.getObfuscatedDescriptor(),
-                mapping.getDeobfuscatedName()
-        ));
+        printMapping(mapping, 1, "m\t"
+                + mapping.getParent().getFullObfuscatedName() + "\t"
+                + mapping.getObfuscatedDescriptor() + "\t"
+                + mapping.getObfuscatedName() + "\t"
+                + mapping.getDeobfuscatedName());
+
+        for (MethodParameterMapping parameter : mapping.getParameterMappings()) {
+            printMapping(parameter, 2, "p\t"
+                + parameter.getIndex() + "\t\t"
+                + parameter.getDeobfuscatedName());
+        }
     }
 
+    protected void printMapping(final Mapping<?, ?> mapping, final int indent, final String line) {
+        printIndent(indent);
+        writer.println(line);
+
+        if (!mapping.getJavadoc().isEmpty()) {
+            printIndent(indent + 1);
+            writer.println("c " + String.join("\\n", mapping.getJavadoc()));
+        }
+    }
+
+    private void printIndent(int indent) {
+        for (int i = 0; i < indent; i++) {
+            writer.print('\t');
+        }
+    }
 }

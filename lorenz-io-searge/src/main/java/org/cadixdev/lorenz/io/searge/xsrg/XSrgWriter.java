@@ -115,7 +115,7 @@ public class XSrgWriter extends TextMappingsWriter {
      * @param mapping The field mapping
      */
     protected void writeFieldMapping(final FieldMapping mapping) {
-        // The SHOULD_WRITE test should have already have been performed, so we're good
+        // The hasDeobfuscatedName test should have already have been performed, so we're good
         final Optional<FieldType> fieldType = mapping.getType();
         fieldType.ifPresent(type -> {
             fields.add(String.format("FD: %s %s %s %s",
@@ -131,7 +131,7 @@ public class XSrgWriter extends TextMappingsWriter {
      * @param mapping The method mapping
      */
     protected void writeMethodMapping(final MethodMapping mapping) {
-        // The SHOULD_WRITE test should have already have been performed, so we're good
+        // The hasDeobfuscatedName test should have already have been performed, so we're good
         methods.add(String.format("MD: %s %s %s %s",
                 mapping.getFullObfuscatedName(), mapping.getObfuscatedDescriptor(),
                 mapping.getFullDeobfuscatedName(), mapping.getDeobfuscatedDescriptor()));

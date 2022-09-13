@@ -1,0 +1,16 @@
+tiny	2	0	official	named
+c	ght	uk/jamierocks/Test
+	f	Ljava/util/logging/Logger;	rft	log
+	m	(I)Z	hyuip	isEven
+		p	0		num
+c	ght$ds	Example
+	f	Luk/jamierocks/Server;	juh	server
+	m	(I)Z	hyuip	isOdd
+		p	0		num
+c	ght$ds$bg	Inner
+	m	(I)Z	dup	print
+		p	0		num
+c	ght$beep	Beep
+c	ght$beep$boop	Boop
+	m	(I)Z	dup	print
+		p	0		num

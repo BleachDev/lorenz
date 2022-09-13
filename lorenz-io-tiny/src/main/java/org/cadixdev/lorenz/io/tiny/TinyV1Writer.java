@@ -23,7 +23,7 @@
  * THE SOFTWARE.
  */
 
-package org.cadixdev.lorenz.io.searge.csrg;
+package org.cadixdev.lorenz.io.tiny;
 
 import org.cadixdev.lorenz.MappingSet;
 import org.cadixdev.lorenz.io.MappingsWriter;
@@ -33,48 +33,43 @@ import org.cadixdev.lorenz.model.FieldMapping;
 import org.cadixdev.lorenz.model.Mapping;
 import org.cadixdev.lorenz.model.MethodMapping;
 
+import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * An implementation of {@link MappingsWriter} for the CSRG format.
+ * An implementation of {@link MappingsWriter} for the Tiny V1 format.
  *
- * @author Jamie Mansfield
- * @since 0.4.0
+ * @author Bleach
+ * @since 1.0.0
  */
-public class CSrgWriter extends TextMappingsWriter {
+public class TinyV1Writer extends TextMappingsWriter {
 
-    private final List<String> classes = new ArrayList<>();
-    private final List<String> fields = new ArrayList<>();
-    private final List<String> methods = new ArrayList<>();
+    private String from;
+    private String to;
 
-    /**
-     * Creates a new CSRG mappings writer, from the given {@link Writer}.
-     *
-     * @param writer The writer
-     */
-    public CSrgWriter(final Writer writer) {
+    public TinyV1Writer(final Writer writer) {
         super(writer);
     }
 
+    public TinyV1Writer withFormats(String from, String to) {
+        this.from = from;
+        this.to = to;
+        return this;
+    }
+
     @Override
-    public void write(final MappingSet mappings) {
-        // Write class mappings
+    public void write(final MappingSet mappings) throws IOException {
+        if (from == null || to == null) {
+            throw new IllegalStateException("Format names not set. call withFormats() before writing!");
+        }
+
+        // Write header
+        writer.println("v1\t" + from + "\t" + to);
+
         mappings.getTopLevelClassMappings().stream()
                 .filter(ClassMapping::hasMappings)
                 .sorted(getConfig().getClassMappingComparator())
                 .forEach(this::writeClassMapping);
-
-        // Write everything to the print writer
-        classes.forEach(writer::println);
-        fields.forEach(writer::println);
-        methods.forEach(writer::println);
-
-        // Clear out the lists, to ensure that mappings aren't written twice (or more)
-        classes.clear();
-        fields.clear();
-        methods.clear();
     }
 
     /**
@@ -85,14 +80,10 @@ public class CSrgWriter extends TextMappingsWriter {
     protected void writeClassMapping(final ClassMapping<?, ?> mapping) {
         // Check if the mapping should be written, and if so write it
         if (mapping.hasDeobfuscatedName()) {
-            classes.add(String.format("%s %s", mapping.getFullObfuscatedName(), mapping.getFullDeobfuscatedName()));
+            writer.println("CLASS\t"
+                    + mapping.getFullObfuscatedName() + "\t"
+                    + mapping.getFullDeobfuscatedName());
         }
-
-        // Write inner class mappings
-        mapping.getInnerClassMappings().stream()
-                .filter(ClassMapping::hasMappings)
-                .sorted(getConfig().getClassMappingComparator())
-                .forEach(this::writeClassMapping);
 
         // Write field mappings
         mapping.getFieldsByName().values().stream()
@@ -105,6 +96,12 @@ public class CSrgWriter extends TextMappingsWriter {
                 .filter(Mapping::hasDeobfuscatedName)
                 .sorted(getConfig().getMethodMappingComparator())
                 .forEach(this::writeMethodMapping);
+
+        // Write inner class mappings
+        mapping.getInnerClassMappings().stream()
+                .filter(ClassMapping::hasMappings)
+                .sorted(getConfig().getClassMappingComparator())
+                .forEach(this::writeClassMapping);
     }
 
     /**
@@ -114,11 +111,11 @@ public class CSrgWriter extends TextMappingsWriter {
      */
     protected void writeFieldMapping(final FieldMapping mapping) {
         // The hasDeobfuscatedName test should have already have been performed, so we're good
-        fields.add(String.format("%s %s %s",
-                mapping.getParent().getFullObfuscatedName(),
-                mapping.getObfuscatedName(),
-                mapping.getDeobfuscatedName()
-        ));
+        writer.println("FIELD\t"
+                + mapping.getParent().getFullObfuscatedName() + "\t"
+                + mapping.getType().map(Object::toString).orElse("") + "\t"
+                + mapping.getObfuscatedName() + "\t"
+                + mapping.getDeobfuscatedName());
     }
 
     /**
@@ -128,11 +125,10 @@ public class CSrgWriter extends TextMappingsWriter {
      */
     protected void writeMethodMapping(final MethodMapping mapping) {
         // The hasDeobfuscatedName test should have already have been performed, so we're good
-        methods.add(String.format("%s %s %s %s",
-                mapping.getParent().getFullObfuscatedName(),
-                mapping.getObfuscatedName(), mapping.getObfuscatedDescriptor(),
-                mapping.getDeobfuscatedName()
-        ));
+        writer.println("METHOD\t"
+                + mapping.getParent().getFullObfuscatedName() + "\t"
+                + mapping.getObfuscatedDescriptor() + "\t"
+                + mapping.getObfuscatedName() + "\t"
+                + mapping.getDeobfuscatedName());
     }
-
 }

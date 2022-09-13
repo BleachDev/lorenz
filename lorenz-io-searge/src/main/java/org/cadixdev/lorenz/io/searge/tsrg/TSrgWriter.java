@@ -99,7 +99,7 @@ public class TSrgWriter extends TextMappingsWriter {
      * @param mapping The field mapping
      */
     protected void writeFieldMapping(final FieldMapping mapping) {
-        // The SHOULD_WRITE test should have already have been performed, so we're good
+        // The hasDeobfuscatedName test should have already have been performed, so we're good
         writer.println(String.format("\t%s %s", mapping.getObfuscatedName(), mapping.getDeobfuscatedName()));
     }
 
@@ -109,7 +109,7 @@ public class TSrgWriter extends TextMappingsWriter {
      * @param mapping The method mapping
      */
     protected void writeMethodMapping(final MethodMapping mapping) {
-        // The SHOULD_WRITE test should have already have been performed, so we're good
+        // The hasDeobfuscatedName test should have already have been performed, so we're good
         writer.println(String.format("\t%s %s %s",
                 mapping.getObfuscatedName(), mapping.getObfuscatedDescriptor(),
                 mapping.getDeobfuscatedName()));

@@ -7,5 +7,6 @@ include(
     "lorenz-io-enigma",
     "lorenz-io-jam",
     "lorenz-io-proguard",
-    "lorenz-io-searge"
+    "lorenz-io-searge",
+    "lorenz-io-tiny"
 )

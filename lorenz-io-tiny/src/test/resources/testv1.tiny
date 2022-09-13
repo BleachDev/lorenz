@@ -1,0 +1,12 @@
+v1	official	named
+CLASS	ght	uk/jamierocks/Test
+FIELD	ght	Ljava/util/logging/Logger;	rft	log
+METHOD	ght	(I)Z	hyuip	isEven
+CLASS	ght$ds	uk/jamierocks/Test$Example
+FIELD	ght$ds	Luk/jamierocks/Server;	juh	server
+METHOD	ght$ds	(I)Z	hyuip	isOdd
+CLASS	ght$ds$bg	uk/jamierocks/Test$Example$Inner
+METHOD	ght$ds$bg	(I)Z	dup	print
+CLASS	ght$beep	uk/jamierocks/Test$Beep
+CLASS	ght$beep$boop	uk/jamierocks/Test$Beep$Boop
+METHOD	ght$beep$boop	(I)Z	dup	print
