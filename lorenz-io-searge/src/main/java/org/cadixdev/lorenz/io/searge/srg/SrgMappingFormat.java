@@ -23,7 +23,7 @@
  * THE SOFTWARE.
  */
 
-package org.cadixdev.lorenz.io.searge;
+package org.cadixdev.lorenz.io.searge.srg;
 
 import org.cadixdev.lorenz.io.MappingsReader;
 import org.cadixdev.lorenz.io.MappingsWriter;

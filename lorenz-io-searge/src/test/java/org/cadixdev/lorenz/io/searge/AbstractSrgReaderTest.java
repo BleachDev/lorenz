@@ -33,6 +33,7 @@ import org.cadixdev.bombe.type.MethodDescriptor;
 import org.cadixdev.bombe.type.signature.MethodSignature;
 import org.cadixdev.lorenz.MappingSet;
 import org.cadixdev.lorenz.io.MappingsReader;
+import org.cadixdev.lorenz.io.searge.srg.SrgMappingFormat;
 import org.cadixdev.lorenz.model.FieldMapping;
 import org.cadixdev.lorenz.model.InnerClassMapping;
 import org.cadixdev.lorenz.model.MethodMapping;

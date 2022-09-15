@@ -28,4 +28,4 @@
  *
  * @since 1.0.0
  */
-package org.cadixdev.lorenz.io.searge;
+package org.cadixdev.lorenz.io.searge.srg;
