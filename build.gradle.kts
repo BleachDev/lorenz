@@ -1,5 +1,5 @@
-import org.cadixdev.gradle.licenser.Licenser
 import org.cadixdev.gradle.licenser.LicenseExtension
+import org.cadixdev.gradle.licenser.Licenser
 
 plugins {
     `java-library`

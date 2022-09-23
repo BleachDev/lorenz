@@ -27,12 +27,7 @@ package org.cadixdev.lorenz.dsl.groovy.test
 
 import org.cadixdev.lorenz.MappingSet
 import org.cadixdev.lorenz.dsl.groovy.MappingSetDsl
-
-import org.cadixdev.lorenz.model.FieldMapping
-import org.cadixdev.lorenz.model.InnerClassMapping
-import org.cadixdev.lorenz.model.MethodMapping
-import org.cadixdev.lorenz.model.MethodParameterMapping
-import org.cadixdev.lorenz.model.TopLevelClassMapping
+import org.cadixdev.lorenz.model.*
 import spock.lang.Specification
 
 class MappingSetDslSpec extends Specification {
