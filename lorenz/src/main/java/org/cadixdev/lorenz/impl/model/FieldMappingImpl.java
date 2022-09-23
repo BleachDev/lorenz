@@ -62,8 +62,9 @@ public class FieldMappingImpl
 
     @Override
     public boolean equals(final Object obj) {
-        if (this == obj) return true;
-        if (!super.equals(obj) || !(obj instanceof FieldMapping)) return false;
+        if (!super.equals(obj)) return false;
+        if (!(obj instanceof FieldMapping)) return false;
+
         final FieldMapping that = (FieldMapping) obj;
         return Objects.equals(signature, that.getSignature());
     }

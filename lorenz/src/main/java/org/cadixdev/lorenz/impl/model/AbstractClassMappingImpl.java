@@ -36,6 +36,7 @@ import org.cadixdev.lorenz.model.FieldMapping;
 import org.cadixdev.lorenz.model.InnerClassMapping;
 import org.cadixdev.lorenz.model.MethodMapping;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -229,14 +230,13 @@ public abstract class AbstractClassMappingImpl<M extends ClassMapping<M, P>, P>
 
     @Override
     public boolean equals(final Object obj) {
-        if (this == obj) return true;
         if (!super.equals(obj)) return false;
         if (!(obj instanceof ClassMapping)) return false;
 
         final ClassMapping<?, ?> that = (ClassMapping<?, ?>) obj;
-        return Objects.equals(getFieldMappings(), that.getFieldMappings()) &&
-                Objects.equals(getMethodMappings(), that.getMethodMappings()) &&
-                Objects.equals(getInnerClassMappings(), that.getInnerClassMappings());
+        return Objects.equals(new ArrayList<>(getFieldMappings()), new ArrayList<>(that.getFieldMappings())) &&
+                Objects.equals(new ArrayList<>(getMethodMappings()), new ArrayList<>(that.getMethodMappings())) &&
+                Objects.equals(new ArrayList<>(getInnerClassMappings()), new ArrayList<>(that.getInnerClassMappings()));
     }
 
     @Override

@@ -56,7 +56,8 @@ public class TopLevelClassMappingImpl
 
     @Override
     public boolean equals(final Object obj) {
-        return this == obj || super.equals(obj) && obj instanceof TopLevelClassMapping;
+        if (!super.equals(obj)) return false;
+        return obj instanceof TopLevelClassMapping;
     }
 
 }

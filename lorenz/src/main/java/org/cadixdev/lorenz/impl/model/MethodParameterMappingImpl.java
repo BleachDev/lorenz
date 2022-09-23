@@ -69,7 +69,8 @@ public class MethodParameterMappingImpl
 
     @Override
     public boolean equals(final Object obj) {
-        return this == obj || super.equals(obj) && obj instanceof MethodParameterMapping;
+        if (!super.equals(obj)) return false;
+        return obj instanceof MethodParameterMapping;
     }
 
 }

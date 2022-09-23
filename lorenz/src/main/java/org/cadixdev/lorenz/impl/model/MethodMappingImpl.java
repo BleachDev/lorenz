@@ -100,8 +100,9 @@ public class MethodMappingImpl
 
     @Override
     public boolean equals(final Object obj) {
-        if (this == obj) return true;
-        if (!super.equals(obj) || !(obj instanceof MethodMapping)) return false;
+        if (!super.equals(obj)) return false;
+        if (!(obj instanceof MethodMapping)) return false;
+        
         final MethodMapping that = (MethodMapping) obj;
         return Objects.equals(signature, that.getSignature());
     }

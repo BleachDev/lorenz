@@ -370,4 +370,12 @@ public class MappingSet implements Reversible<MappingSet, MappingSet>, Iterable<
         return new MappingSet(modelFactory);
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (!(other instanceof MappingSet)) return false;
+
+        final MappingSet that = (MappingSet) other;
+        return topLevelClasses.equals(that.topLevelClasses);
+    }
 }

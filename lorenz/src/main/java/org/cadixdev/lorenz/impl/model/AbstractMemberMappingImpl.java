@@ -64,16 +64,6 @@ public abstract class AbstractMemberMappingImpl<M extends MemberMapping<M, P>, P
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) return true;
-        if (!super.equals(obj)) return false;
-        if (!(obj instanceof MemberMapping)) return false;
-
-        final MemberMapping<?, ?> that = (MemberMapping<?, ?>) obj;
-        return Objects.equals(parent, that.getParent());
-    }
-
-    @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), parent.getFullObfuscatedName(), parent.getFullDeobfuscatedName());
     }
