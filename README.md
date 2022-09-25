@@ -8,6 +8,7 @@ supports a variety of mapping formats:
 - SRG and its variants (CSRG, TSRG, and XSRG)
 - Enigma (through `lorenz-io-enigma`)
 - JAM (through `lorenz-io-jam`)
+- Tiny V1 & V2 (through `lorenz-io-tiny`)
 - ProGuard (**reader only** through `lorenz-io-proguard`)
 
 ## Branches
@@ -56,8 +57,7 @@ giving developers the freedom to do as they please with it, with no assurances f
 ```
 The MIT License (MIT)
 
-Copyright (c) Jamie Mansfield <https://www.jamierocks.uk/>
-Copyright (c) contributors
+Copyright (c) Jamie Mansfield <https://www.jamierocks.uk/>, Bleach <https://bleach.dev/> and contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -68,14 +68,6 @@ furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
 ```
 
 ## Discuss
@@ -89,5 +81,5 @@ and discuss Lorenz and other Cadix projects.
 
 [git-flow]: https://nvie.com/posts/a-successful-git-branching-model/
 [Sonatype's OSS repository]: https://oss.sonatype.org/content/repositories/snapshots/
-[Make an issue]: https://github.com/CadixDev/Lorenz/issues/new
+[Make an issue]: https://github.com/BleachDev/Lorenz/issues/new
 [EsperNet]: https://esper.net/

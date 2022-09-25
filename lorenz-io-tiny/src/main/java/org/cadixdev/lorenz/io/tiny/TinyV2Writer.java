@@ -103,7 +103,6 @@ public class TinyV2Writer extends TextMappingsWriter {
      */
     protected void writeFieldMapping(final FieldMapping mapping) {
         printMapping(mapping, 1, "f\t"
-                + mapping.getParent().getFullObfuscatedName() + "\t"
                 + mapping.getType().map(Object::toString).orElse("") + "\t"
                 + mapping.getObfuscatedName() + "\t"
                 + mapping.getDeobfuscatedName());
@@ -116,7 +115,6 @@ public class TinyV2Writer extends TextMappingsWriter {
      */
     protected void writeMethodMapping(final MethodMapping mapping) {
         printMapping(mapping, 1, "m\t"
-                + mapping.getParent().getFullObfuscatedName() + "\t"
                 + mapping.getObfuscatedDescriptor() + "\t"
                 + mapping.getObfuscatedName() + "\t"
                 + mapping.getDeobfuscatedName());
