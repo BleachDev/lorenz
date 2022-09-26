@@ -86,7 +86,8 @@ public class MethodMappingImpl
     protected StringJoiner buildToString() {
         return super.buildToString()
                 .add("obfuscatedSignature=" + getObfuscatedDescriptor())
-                .add("deobfuscatedSignature=" + getDeobfuscatedDescriptor());
+                .add("deobfuscatedSignature=" + getDeobfuscatedDescriptor())
+                .add("parameters=" + getParameterMappings());
     }
 
     @Override
