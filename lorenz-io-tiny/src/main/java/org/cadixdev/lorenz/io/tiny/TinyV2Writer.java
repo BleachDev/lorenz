@@ -71,11 +71,9 @@ public class TinyV2Writer extends TextMappingsWriter {
      */
     protected void writeClassMapping(final ClassMapping<?, ?> mapping) {
         // Check if the mapping should be written, and if so write it
-        if (mapping.hasDeobfuscatedName()) {
-            printMapping(mapping, 0, "c\t"
-                    + mapping.getFullObfuscatedName() + "\t"
-                    + mapping.getFullDeobfuscatedName());
-        }
+        printMapping(mapping, 0, "c\t"
+                + mapping.getFullObfuscatedName() + "\t"
+                + mapping.getFullDeobfuscatedName());
 
         // Write field mappings
         mapping.getFieldsByName().values().stream()

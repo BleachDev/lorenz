@@ -70,11 +70,9 @@ public class TinyV1Writer extends TextMappingsWriter {
      */
     protected void writeClassMapping(final ClassMapping<?, ?> mapping) {
         // Check if the mapping should be written, and if so write it
-        if (mapping.hasDeobfuscatedName()) {
-            writer.println("CLASS\t"
-                    + mapping.getFullObfuscatedName() + "\t"
-                    + mapping.getFullDeobfuscatedName());
-        }
+        writer.println("CLASS\t"
+                + mapping.getFullObfuscatedName() + "\t"
+                + mapping.getFullDeobfuscatedName());
 
         // Write field mappings
         mapping.getFieldsByName().values().stream()
