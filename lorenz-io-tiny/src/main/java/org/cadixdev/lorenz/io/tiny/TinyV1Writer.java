@@ -101,7 +101,6 @@ public class TinyV1Writer extends TextMappingsWriter {
      * @param mapping The field mapping
      */
     protected void writeFieldMapping(final FieldMapping mapping) {
-        // The hasDeobfuscatedName test should have already have been performed, so we're good
         writer.println("FIELD\t"
                 + mapping.getParent().getFullObfuscatedName() + "\t"
                 + mapping.getType().map(Object::toString).orElse("") + "\t"
@@ -115,7 +114,6 @@ public class TinyV1Writer extends TextMappingsWriter {
      * @param mapping The method mapping
      */
     protected void writeMethodMapping(final MethodMapping mapping) {
-        // The hasDeobfuscatedName test should have already have been performed, so we're good
         writer.println("METHOD\t"
                 + mapping.getParent().getFullObfuscatedName() + "\t"
                 + mapping.getObfuscatedDescriptor() + "\t"

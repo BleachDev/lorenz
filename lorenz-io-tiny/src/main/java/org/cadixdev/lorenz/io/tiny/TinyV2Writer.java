@@ -85,7 +85,7 @@ public class TinyV2Writer extends TextMappingsWriter {
 
         // Write method mappings
         mapping.getMethodMappings().stream()
-                .filter(Mapping::hasDeobfuscatedName)
+                .filter(MethodMapping::hasMappings)
                 .sorted(getConfig().getMethodMappingComparator())
                 .forEach(this::writeMethodMapping);
 
